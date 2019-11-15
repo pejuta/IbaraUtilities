@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IbaraBasicActionMiniMap
 // @namespace    pejuta
-// @version      0.1.7
+// @version      0.1.7.1
 // @description  マップ上にあなたの現在位置を表示します。
 // @author       pejuta
 // @include      /^http:\/\/lisge\.com\/ib\/act_main\.php.*?$/
@@ -11,7 +11,7 @@
 
 (async ($) => {
 
-    const htmlFragUrl = "https://dl.dropboxusercontent.com/s/tbs657a0e4ygiuf/minimap.html";
+    const htmlFragUrl = "https://pejuta.github.io/IbaraUtilities/UserScripts/src/minimap.html";
 
     function extractENoFromCookie() {
         const m = /IBR_KEY=.+?_(\d+)(?:;|$)/.exec(document.cookie);
