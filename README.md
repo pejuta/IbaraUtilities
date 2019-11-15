@@ -1,5 +1,5 @@
 # IbaraUtilities
-pejuta(ENo.411, @11powder)の制作したイバラシティ向けの便利なユーザースクリプト等のツールを置いてます。
+[pejuta(ENo.411, @11powder)](https://twitter.com/11powder)の制作したイバラシティ向けの便利なユーザースクリプト等のツールを置いてます。
   
   
 ## UserScripts
