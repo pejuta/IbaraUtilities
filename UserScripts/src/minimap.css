@@ -1,0 +1,107 @@
+@charset "utf-8";
+
+#MiniMapCnt {
+    width: 325px;
+    height: 325px;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    line-height: 0;
+    background-color: rgb(32,0,0);
+}
+
+#MiniMap {
+    position: absolute;
+    left: 150px;
+    top: 150px;
+    border-collapse: collapse; border-spacing: 0;
+}
+
+#MiniMap td, #MiniMap th {
+    padding: 0;
+}
+
+#CntCourse {
+    width: 0;
+    height: 0;
+    position: absolute;
+    left: 150px;
+    top: 150px;
+    font-size: 25px;
+    line-height: 100%;
+    vertical-align: middle;
+}
+
+.MapCourse {
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    pointer-events: none;
+}
+.MapCourse.Top > .MapCourse {
+    top: -25px;
+    left: 0px;
+}
+.MapCourse.Right > .MapCourse {
+    top: 0px;
+    left: 25px;
+}
+.MapCourse.Bottom > .MapCourse {
+    top: 25px;
+    left: 0px;
+}
+.MapCourse.Left > .MapCourse {
+    top: 0px;
+    left: -25px;
+}
+.MapCourse.Final > .MapCourse {
+    visibility: hidden;
+}
+
+.MapCourseIco::after {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+}
+.MapCourseIco.Pause::after {
+    content: "\1F4A4";
+    color: transparent;
+    text-shadow: 0 0 0 aqua;
+}
+.MapCourseIco.Step::after {
+    content: "\1F463";
+    color: transparent;
+    text-shadow: 0 0 0 orange;
+}
+.Paw .MapCourseIco.Step::after {
+    content: "\1F43E";
+}
+.MapCourse.Right > .MapCourseIco.Step::after {
+    transform: rotate(90deg);
+}
+.MapCourse.Bottom > .MapCourseIco.Step::after {
+    transform: rotate(180deg);
+}
+.MapCourse.Left > .MapCourseIco.Step::after {
+    transform: rotate(270deg);
+}
+.MapCourseIco.Taxi::after {
+    content: "\1F695";
+    color: inherit;
+    text-shadow: none;
+}
+.MapCourseIco.Goal::after {
+    content: "\1F6A9";
+    color: inherit;
+    text-shadow: none;
+}
+
+#MapShadow {
+    width: 325px;
+    height: 325px;
+    position: absolute;
+    background-image: url('https://dl.dropboxusercontent.com/s/xq54yg6fw9bisnv/darkness50.png');
+    pointer-events: none;
+}
