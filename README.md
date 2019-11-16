@@ -21,10 +21,10 @@
 ### [IbaraMarkYourCurrentLocation.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraMarkYourCurrentLocation.user.js)
 - ハザマ地図上にあなたのキャラクターの現在位置を表示します。
 
-### [IbaraSeisanPasta.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSeisanPasta.user.js)
+### [IbaraSeisanPasta.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSeisanPasta.min.user.js)
 - 生産仕様や生産宣言の共有・入力を手助けするツールです。**人気。**
 
-### [IbaraTalkUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js)
+### [IbaraTalkUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.min.user.js)
 - リアルタイム交流ページで発言内容のプレビューを動的に表示したり、タグの入力を簡単に行えるようにします。 **人気。**
 
 ## Pages
