@@ -7,7 +7,7 @@
 - 宣言をざっくり確認する項目の一番上に自分のキャラクターの名称/ENo.を追加し誰の宣言であるかを明確にします。  
 
 ### [IbaraBBSCharaLinker.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBBSCharaLinker.user.js)
-- 各公式BBSに書き込んだ人の名称に数字が含まれている場合、それをENo.であるものとしてキャラクターページへのリンクを生成します。
+- 各公式BBSの投稿者の名前に含まれている数字をENo.として、該当キャラクターへのリンクを生成します。
 
 ### [IbaraBasicActionMiniMap.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBasicActionMiniMap.user.js)
 - 基本行動：移動宣言にミニマップを追加し入力した通りの移動の軌跡を表示します。（壁ドン池ポチャ判定はないので注意です。） **人気。**
