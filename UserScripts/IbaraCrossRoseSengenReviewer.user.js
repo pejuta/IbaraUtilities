@@ -11,7 +11,7 @@
 // ==/UserScript==
 (($) => {
     "use strict";
-    
+
     const _vdoc = document.implementation.createHTMLDocument();
 
     $("div.SMIGI > table:last tr td:nth-of-type(3)").each((i, e) => {

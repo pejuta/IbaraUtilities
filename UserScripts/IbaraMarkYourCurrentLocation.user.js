@@ -10,7 +10,7 @@
 // ==/UserScript==
 (async ($) => {
     "use strict";
-    
+
     function extractENoFromCookie() {
         const m = /IBR_KEY=.+?_(\d+)(?:;|$)/.exec(document.cookie);
         if (m === null) {

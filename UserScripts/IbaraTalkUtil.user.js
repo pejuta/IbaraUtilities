@@ -16,7 +16,7 @@
 // ・Ctrl+Shift+Enterによる発言送信
 (function ($) {
     "use strict";
-    
+
     //アイコン一覧の有無で交流ページかどうかを判断する
     if(!document.getElementById("CL1")) return;
 

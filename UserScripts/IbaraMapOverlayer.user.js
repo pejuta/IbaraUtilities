@@ -10,7 +10,7 @@
 // ==/UserScript==
 (($) => {
     "use strict";
-    
+
     async function overlayIbaracityMap () {
         const virDoc = document.implementation.createHTMLDocument();
         const idx = parseInt(/map(\d{1,2})\.html$/.exec(document.location.href)[1], 10);
