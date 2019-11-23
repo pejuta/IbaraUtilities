@@ -24,6 +24,9 @@
 ### [IbaraSeisanPasta.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSeisanPasta.user.js)
 - 生産仕様や生産宣言の共有・入力を手助けするツールです。**人気。**
 
+### [IbaraShowProcessNumber.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraShowProcessNumber.user.js)
+- 基本行動・取引行動宣言ページの該当項目に処理順を表示します。
+
 ### [IbaraTalkUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.min.user.js)
 - リアルタイム交流ページで発言内容のプレビューを動的に表示したり、タグの入力を簡単に行えるようにします。 **人気。**
 
