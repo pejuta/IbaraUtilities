@@ -3,7 +3,7 @@
 // @namespace   https://twitter.com/11powder
 // @description 交流ってスバラシティ
 // @include     http://lisge.com/ib/talk.php*
-// @version     1.0.4
+// @version     1.0.5
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @grant       none
@@ -373,143 +373,182 @@
             }
         }
 
-        return function (elem, selector, butValueFilter){
-            var $buts,
-                butSelector = "input[type='submit']" + (butValueFilter ? "[value='" + butValueFilter + "']" : "");
-
+        return function (elem, selector, buttonValueFilter){
+            var btnSelector = "input[type='submit']" + (buttonValueFilter ? "[value='" + buttonValueFilter + "']" : "");
+            var $btns;
             if (selector) {
-                $buts = $(elem).find(selector).closest("form").find(butSelector);
+                $btns = $(elem).find(selector).closest("form").find(btnSelector);
             } else {
-                $buts = $(elem).closest("form").find(butSelector);
+                $btns = $(elem).closest("form").find(btnSelector);
             }
-            // $buts.after("(Ctrl+Shift+Enter)");
+            // $btns.after("(Ctrl+Shift+Enter)");
 
             if (selector) {
-                $(elem).on("keydown", selector, { but:butSelector }, KeydownEvent_FormSubmittion);
+                $(elem).on("keydown", selector, { but:btnSelector }, KeydownEvent_FormSubmittion);
             } else {
-                $(elem).on("keydown", { but:butSelector }, KeydownEvent_FormSubmittion);
+                $(elem).on("keydown", { but:btnSelector }, KeydownEvent_FormSubmittion);
             }
         };
     })();
 
-    var EnableTagAutocompletion = (function(){
-        var re_ornamentTagStart_Footer = /<?((?:F(?=\d)|I|S|U)[1-7]?)>?$/i;
-        var re_ornamentTagEnd_Footer = /<?\/((?:F(?=\d)|I|S|U)[1-7]?)>?$/i;
-        var re_ornamentTagStart = /<((?:F(?=\d)|I|S|U)[1-7]?)>/gi;
-        var re_ornamentTagEnd = /<\/((?:F(?=\d)|I|S|U)[1-7]?)>/gi;
-        var re_ornamentTagStart_ForAnalyze = /<(\D\d?)>/;
-        var re_ornamentTagEnd_ForAnalyze = /<\/(\D\d?)>/;
+    var EnableCloseTagAutocompletion = (function(){
 
-        function FindUnclosedTagName(val_before, val_after){
-            var starts = val_before.match(re_ornamentTagStart);
-            if (!starts) {
-                return null;
+        var _ornamentTagNamePattern = "((?:F(?=\\d)|I|S|U)[1-7]?)";
+        var _maxOrnamentTagChars = 4; //_ornamentTagNamePatternにマッチする最大文字数+2
+
+        var _reTagStart  = new RegExp("<" + _ornamentTagNamePattern + ">", "gi");
+        var _reTagEnd    = new RegExp("</" + _ornamentTagNamePattern + ">", "gi");
+        function FindUnclosedTags(valBefore, valAfter){
+            var tagStarts = valBefore.match(_reTagStart);
+            if (!tagStarts) {
+                return [];
             }
-            var ends = (val_before + val_after).match(re_ornamentTagEnd);
-            if (ends) {
-                for (var ei = ends.length - 1; ei >= 0; ei--) {
-                    var re_targetStart = new RegExp("<" + re_ornamentTagEnd_ForAnalyze.exec(ends[ei])[1] + ">", "i");
-                    for (var si = starts.length - 1; si >= 0; si--) {
-                        if (re_targetStart.test(starts[si])) {
-                            starts.splice(si, 1);
-                            break;
-                        }
+            var tagStartNames = tagStarts.map(function(val, i) {
+                return val.slice(1, val.length - 1);
+            });
+
+            var tagEnds = (valBefore + valAfter).match(_reTagEnd);
+            if (!tagEnds) {
+                return tagStartNames;
+            }
+            var tagEndNames = tagEnds.map(function(val, i) {
+                return val.slice(2, val.length - 1);
+            });
+
+            //tagStartNames配列から「既に閉じられているタグ」を取り除く。
+            for (var ei = tagEndNames.length - 1; ei >= 0; ei--) {
+                for (var si = tagStartNames.length - 1; si >= 0; si--) {
+                    if (tagEndNames[ei] === tagStartNames[si]) {
+                        tagStartNames.splice(si, 1);
+                        break;
                     }
-                    // GM_log("<" + re_ornamentTagEnd_ForAnalyze.exec(ends[ei])[1] + ">" + " has removed. \r\n" + JSON.stringify(starts));
-                }
-                if (starts.length === 0) {
-                    return null;
                 }
             }
-            return (re_ornamentTagStart_ForAnalyze.exec(starts[starts.length-1]))[1];
+
+            //tagStartNames配列に残っている要素が「閉じられていない開始タグ」
+            return tagStartNames;
+        }
+
+        var _reTagHead = new RegExp("<[^>]{0," + _maxOrnamentTagChars + "}?$");
+        var _reTagFoot = new RegExp("^[^<]{0," + _maxOrnamentTagChars + "}?>");
+        function InsertOrnamentTags(elem) {
+            if (elem.selectionStart !== elem.selectionEnd) {
+                //文字列選択中
+                return false;
+            }
+
+            var sStart = elem.selectionStart;
+            var valBefore = elem.value.slice(0, sStart);
+            var valAfter = elem.value.slice(sStart);
+
+            var tagMatch = new RegExp("<?" + _ornamentTagNamePattern + ">?$", "i").exec(valBefore);
+            if (!tagMatch) {
+                return false;
+            }
+
+            var MatchedAsCloseTag = new RegExp("<?/" + _ornamentTagNamePattern + ">?$", "i").test(valBefore);
+            if (MatchedAsCloseTag) {
+                return false;
+            }
+
+            var tagIsCompleted = /^<[^<>]+?>$/.test(tagMatch[0]);
+            if (tagIsCompleted) {
+                //<F1>のように<と>抜けがなく完璧。このメソッドで処理することはない。後続のInsertLastUnclosedTagEndに処理させることになる。
+                return false;
+            }
+            if (_reTagHead.test(valBefore) && _reTagFoot.test(valAfter)) {
+                //この記述で<i|7>のように、タグの途中にカーソルが合わされていて、カーソルより手前が構文として成立する状況を処理する。
+                return false;
+            }
+
+            var tagToInsert = "<" + tagMatch[1] + "></" + tagMatch[1] + ">";
+            elem.value = valBefore.slice(0, -tagMatch[0].length) + tagToInsert + valAfter;
+            var newSelection = sStart - tagMatch[0].length + tagMatch[1].length + 2;
+            elem.setSelectionRange(newSelection, newSelection);
+
+            return true;
+        }
+
+        //入れ違いタグ問題などはあるが、"公式の仕様通り"なので対応する必要がない
+        function InsertLastUnclosedTagEnd(elem) {
+            if (elem.selectionStart !== elem.selectionEnd) {
+                //文字列選択中
+                return false;
+            }
+
+            var sStart = elem.selectionStart;
+            var valBefore = elem.value.slice(0, sStart);
+            var valAfter = elem.value.slice(sStart);
+
+            var unclosedTags = FindUnclosedTags(valBefore, valAfter);
+            if (unclosedTags.length === 0) {
+                return false;
+            }
+
+            var closeTag = "</" + unclosedTags[unclosedTags.length - 1] + ">";
+            elem.value = valBefore + closeTag + valAfter;
+            elem.setSelectionRange(sStart, sStart + closeTag.length);
+
+            return true;
+        }
+
+        function CompleteLastUnclosedTagEnd(elem) {
+            if (elem.selectionStart <= 0 || elem.selectionStart !== elem.selectionEnd) {
+                //カーソルが最初にあるか、文字列選択中
+                return false;
+            }
+
+            var sStart = elem.selectionStart;
+            var valBefore = elem.value.slice(0, sStart);
+            var valAfter = elem.value.slice(sStart);
+
+            var lastChar = valBefore[sStart - 1];
+            if (lastChar !== "<") {
+                return false;
+            }
+
+            var unclosedTags = FindUnclosedTags(valBefore, valAfter);
+            if (unclosedTags.length === 0) {
+                return false;
+            }
+            var closeTagVal =  "/" + unclosedTags[unclosedTags.length - 1] + ">";
+            elem.value = valBefore + closeTagVal + valAfter;
+            elem.setSelectionRange(sStart + 1, sStart + closeTagVal.length);
+
+            return true;
+        }
+
+        function KeydownEvent_AutoCompleteTag(e) {
+            if (e.which === 9 /*"\t"*/ ) {
+                //ユーザーを混乱させないためタブキー押下は一律でpreventDefaultしておく。
+                e.preventDefault();
+
+                if (this.selectionStart !== this.selectionEnd) {
+                    //文字列選択中
+                    this.setSelectionRange(this.selectionEnd, this.selectionEnd);
+                    return;
+                }
+
+                if (InsertOrnamentTags(this)) {
+                    return;
+                }
+
+                InsertLastUnclosedTagEnd(this);
+
+            } else if (e.key === "/") {
+                if (CompleteLastUnclosedTagEnd(this)) {
+                    e.preventDefault();
+                }
+            } else {
+
+            }
         }
 
         return function (elem, selector) {
-
             if (selector) {
                 $(elem).on("keydown", selector, KeydownEvent_AutoCompleteTag);
             } else {
                 $(elem).on("keydown", KeydownEvent_AutoCompleteTag);
-            }
-
-
-            function KeydownEvent_AutoCompleteTag(e) {
-
-                // GM_log("keydownEvent: " + e.which);
-
-                var s = this.selectionStart;
-                var val = this.value.slice(0, s);
-                var val_after = this.value.slice(s);
-                if (e.which === 9 /*"\t"*/ ) {
-                    //ユーザーを混乱させないためタブキー押下は一律でpreventDefaultしておく。
-                    e.preventDefault();
-
-                    if (this.selectionStart !== this.selectionEnd) {
-                        //文字列選択中
-                        this.setSelectionRange(this.selectionEnd, this.selectionEnd);
-                        return;
-                    }
-
-                    //タブキー押下時、閉じタグを補完する
-                    var lastChars = val.slice((s >= 4 ? s - 4 : 0), s);
-                    // GM_log("tabed: "+ lastChars);
-
-                    var newVal, newSelectPosBegin, newSelectPosStartEnd;
-                    var unclosedTagName;
-                    var m = re_ornamentTagStart_Footer.exec(lastChars);
-                    if (m　&& !(re_ornamentTagEnd_Footer.test(lastChars))) {
-                        if (re_ornamentTagStart_ForAnalyze.test(m[0])) {
-                            //タグ記述が<>抜けなく完璧。既に閉じタグが記述されてはいないかチェック
-                            var unclosedTagName = FindUnclosedTagName(val, val_after);
-                            if (!unclosedTagName || unclosedTagName !== m[1]) {
-                                //どうやら既に閉じられていたようだ。
-                                return;
-                            }
-                        } else if (re_ornamentTagStart_ForAnalyze.test(lastChars.slice(-3) + val_after.slice(0, 2))) {
-                            //この記述で<i 7>とか、<i7 >とかを弾く。
-                            return;
-                        }
-                        newVal = val.slice(0, -(lastChars.length)) + lastChars.replace(re_ornamentTagStart_Footer, "<$1></$1>") + val_after;
-                        newSelectPosBegin = newSelectPosStartEnd = s - m[0].length + m[1].length + 2;
-                    } else {
-                        var unclosedTagName = FindUnclosedTagName(val, val_after);
-                        if (!unclosedTagName) {
-                            return;
-                        }
-                        var closeTag = "</" + unclosedTagName + ">";
-                        newVal = val + closeTag + val_after;
-                        newSelectPosBegin = s;
-                        newSelectPosStartEnd = s + closeTag.length;
-                    }
-
-                    this.value = newVal;
-                    this.setSelectionRange(newSelectPosBegin, newSelectPosStartEnd);
-
-                } else if (e.key === "/") {
-
-                    if (this.selectionStart !== this.selectionEnd) {
-                        //文字列選択中
-                        return;
-                    }
-
-                    //閉じタグの種別判別と自動補完
-                    var lastChar = val.slice(s - 1, s);
-                    if (lastChar !== "<") {
-                        return;
-                    }
-
-                    var unclosedTagName = FindUnclosedTagName(val, val_after);
-                    if(!unclosedTagName){
-                        return;
-                    }
-                    var closeTagVal =  "/" + unclosedTagName + ">";
-                    this.value = val + closeTagVal + val_after;
-                    this.setSelectionRange(s + 1, s + closeTagVal.length);
-
-                    e.preventDefault();
-                } else {
-                    return;
-                }
             }
         };
     })();
@@ -529,6 +568,6 @@
 
     AutoBRTagsToLineBreaks(document.body, "textarea[name^='dt_mes']");
     EnableEasyFormSubmittion(document.body, "textarea[name^='dt_mes']", "発言する");
-    EnableTagAutocompletion(document.body, "textarea[name^='dt_mes']");
+    EnableCloseTagAutocompletion(document.body, "textarea[name^='dt_mes']");
     EnableSayPreview(200);
 })(jQuery);
