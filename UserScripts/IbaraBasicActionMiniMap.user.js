@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name         IbaraBasicActionMiniMap
-// @namespace    pejuta
-// @version      0.1.7.1
+// @namespace    https://twitter.com/11powder
+// @version      0.1.7.2
 // @description  マップ上にあなたの現在位置を表示します。
-// @author       pejuta
 // @include      /^http:\/\/lisge\.com\/ib\/act_main\.php.*?$/
+// @updateURL    https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBasicActionMiniMap.user.js
+// @downloadURL  https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBasicActionMiniMap.user.js
 // @grant        none
 // ==/UserScript==
-"use strict";
-
 (async ($) => {
+    "use strict";
 
     const htmlFragUrl = "https://pejuta.github.io/IbaraUtilities/UserScripts/src/minimap.html";
 
@@ -158,5 +158,3 @@
     updateCourse();
 
 })(jQuery);
-
-
