@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name        IbaraTalkUtil
-// @namespace   pejuta
+// @namespace   https://twitter.com/11powder
 // @description 交流ってスバラシティ
 // @include     http://lisge.com/ib/talk.php*
 // @version     1.0.4
-// @grant       none;
+// @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
+// @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
+// @grant       none
 // ==/UserScript==
 //
 // リアルタイム交流ページに以下の機能を追加します。
@@ -13,6 +15,8 @@
 // ・BRタグの自動置換
 // ・Ctrl+Shift+Enterによる発言送信
 (function ($) {
+    "use strict";
+    
     //アイコン一覧の有無で交流ページかどうかを判断する
     if(!document.getElementById("CL1")) return;
 
