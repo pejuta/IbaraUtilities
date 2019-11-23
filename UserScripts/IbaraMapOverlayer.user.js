@@ -1,15 +1,16 @@
 // ==UserScript==
 // @name         IbaraMapOverlayer
-// @namespace    pejuta
-// @version      0.1.0
+// @namespace    https://twitter.com/11powder
+// @version      0.1.1
 // @description  ハザママップにイバラシティマップをオーバーレイして表示する
-// @author       pejuta
 // @include      /^http:\/\/lisge\.com\/ib\/k\/now\/map\d{1,2}\.html$/
+// @updateURL    https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraMapOverlayer.user.js
+// @downloadURL  https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraMapOverlayer.user.js
 // @grant        none
 // ==/UserScript==
-"use strict";
-
 (($) => {
+    "use strict";
+    
     async function overlayIbaracityMap () {
         const virDoc = document.implementation.createHTMLDocument();
         const idx = parseInt(/map(\d{1,2})\.html$/.exec(document.location.href)[1], 10);
