@@ -1,15 +1,16 @@
 // ==UserScript==
 // @name         IbaraMarkYourCurrentLocation
-// @namespace    pejuta
+// @namespace    https://twitter.com/11powder
 // @version      0.1.2
 // @description  マップ上にあなたの現在位置を表示します。
-// @author       pejuta
 // @include      /^http:\/\/lisge\.com\/ib\/k\/now\/map\d{1,2}\.html$/
+// @updateURL    https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraMarkYourCurrentLocation.user.js
+// @downloadURL  https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraMarkYourCurrentLocation.user.js
 // @grant        none
 // ==/UserScript==
-"use strict";
-
 (async ($) => {
+    "use strict";
+    
     function extractENoFromCookie() {
         const m = /IBR_KEY=.+?_(\d+)(?:;|$)/.exec(document.cookie);
         if (m === null) {
@@ -91,5 +92,3 @@
 
     $(`table[width='500']:eq(1) tr:nth-of-type(${loc.y + 1})>td:nth-of-type(${loc.x + 1})>div`).text("★").css({ "color": "yellow", "font-size": "25px", "line-height": "100%" });
 })(jQuery);
-
-
