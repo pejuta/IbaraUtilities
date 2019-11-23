@@ -1,13 +1,16 @@
 // ==UserScript==
 // @name        IbaraBBSCharaLinker
-// @namespace   Pejuta
+// @namespace   https://twitter.com/11powder
 // @description 掲示板のキャラクター名のENo.あたりにリンクを追加する。
 // @include     http://lisge.com/ib/bbs.php*
 // @include     http://lisge.com/ib/bbstrade.php*
-// @version     1.0.0
+// @version     1.0.1
+// @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBBSCharaLinker.user.js
+// @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBBSCharaLinker.user.js
 // @grant       none
 // ==/UserScript==
 (($) => {
+	"use strict";
 	const reChara = /([1-9１-９][0-9０-９]*)/g;
 
 	function addLink(i, e) {
