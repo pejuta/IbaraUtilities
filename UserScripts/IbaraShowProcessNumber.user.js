@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name        IbaraShowProcessingOrder
+// @name        IbaraShowProcessNumber
 // @namespace   https://twitter.com/11powder
 // @description 見切りに関する項目に処理順を表示する
 // @include     http://lisge.com/ib/act_main.php*
 // @include     http://lisge.com/ib/act_trade.php*
-// @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraShowProcessingOrder.user.js
-// @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraShowProcessingOrder.user.js
+// @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraShowProcessNumber.user.js
+// @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraShowProcessNumber.user.js
 // @version     1.0.1
 // @grant       none
 // ==/UserScript==
