@@ -1,15 +1,17 @@
 // ==UserScript==
 // @name         IbaraCrossRoseSengenReviewer
-// @namespace    pejuta
-// @version      0.1.0
+// @namespace    https://twitter.com/11powder
+// @version      0.1.1
 // @description  CrossRoseのHomeでの宣言確認を可能にします。
 // @author       pejuta
 // @include      http://lisge.com/ib/act_index.php*
+// @updateURL    https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraCrossRoseSengenReviewer.user.js
+// @downloadURL  https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraCrossRoseSengenReviewer.user.js
 // @grant        none
 // ==/UserScript==
-"use strict";
-
 (($) => {
+    "use strict";
+    
     const _vdoc = document.implementation.createHTMLDocument();
 
     $("div.SMIGI > table:last tr td:nth-of-type(3)").each((i, e) => {
