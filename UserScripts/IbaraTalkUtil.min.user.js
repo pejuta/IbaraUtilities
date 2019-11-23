@@ -4,7 +4,7 @@
 // @description 交流ってスバラシティ
 // @include     http://lisge.com/ib/talk.php*
 // @version     1.0.4
-// @grant       none;
+// @grant       none
 // ==/UserScript==
 //
 // リアルタイム交流ページに以下の機能を追加します。
