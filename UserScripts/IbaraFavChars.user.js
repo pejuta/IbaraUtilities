@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IbaraFavChars
 // @namespace    https://twitter.com/11powder
-// @version      0.1.1
+// @version      0.1.1.1
 // @description  お気に入りのキャラクターに愛を添えて。
 // @include      http://lisge.com/ib/chalist.php*
 // @include      http://lisge.com/ib/talk.php*
@@ -383,9 +383,6 @@
 
         const $charaTable = $("table[width='950']");
 
-        $charaTable.find("tr").each((i, e) => insertFavColumn(e));
-        _favENoList.applyFavs($charaTable);
-
         let db_tmp;
         try {
             db_tmp = await loadAndUpdateDB($charaTable);
@@ -393,6 +390,9 @@
             //DBが利用できないっぽい
             $charaTable.on("click", "td.Favorite", (e) => favClickEvt);
             return;
+        } finally {
+            $charaTable.find("tr").each((i, e) => insertFavColumn(e));
+            _favENoList.applyFavs($charaTable);
         }
         const db = db_tmp;
 
