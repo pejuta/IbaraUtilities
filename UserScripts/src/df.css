@@ -1,4 +1,10 @@
 @charset "utf-8";
+.df-stage {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
 .dot-flashing {
   position: relative;
   width: 4px;
