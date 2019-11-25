@@ -16,7 +16,8 @@
 - Cross RoseのHome画面で全ての「ざっくり宣言確認」を確認できるようにします。**人気。**
 
 ### [IbaraFavChars.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraFavChars.user.js)
-- キャラリスト、キャラクター結果、およびTalkページでキャラクターをお気に入り登録できるようになります。（お気に入りキャラクター一覧表示機能もそのうち実装するかもしれません。）
+- キャラクター一覧、キャラクター結果、およびTalkページでキャラクターをお気に入り登録できるようになります。  
+- キャラクター一覧ページでお気に入り登録したキャラクターの一覧を確認することが出来ます。
 
 ### [IbaraMapOverlayer.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraMapOverlayer.user.js)
 - ハザマ地図上に公式プレイスを表示します。
