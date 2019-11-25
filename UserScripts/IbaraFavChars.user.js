@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IbaraFavChars
 // @namespace    https://twitter.com/11powder
-// @version      0.1.0
+// @version      0.1.1
 // @description  お気に入りのキャラクターに愛を添えて。
 // @include      http://lisge.com/ib/chalist.php*
 // @include      http://lisge.com/ib/talk.php*
@@ -18,49 +18,16 @@
         $("head").append(`<style type='text/css'>${style}</style>`);
     }
 
-    const SavableList = (() => {
-        //private members
-        const lists = new WeakMap();
-        const lsIndices = new WeakMap();
+    const FLASHDOT_CSS_URL = "https://pejuta.github.io/IbaraUtilities/UserScripts/src/df.css";
+    function loadFlashdotCSS() {
+        return $.ajax({ type: "GET", dataType: "text", url: FLASHDOT_CSS_URL }).done((css) => $addStyle(css));
+    }
 
-        //thisを利用するためにcallされる必要がある.
-        const setLocalStorageIndex = function (index) {
-            lsIndices.set(this, index);
-        };
-
-        const fn = function SavableList (localStorageIndex) {
-            setLocalStorageIndex.call(this, localStorageIndex);
-            this.loadOrInit();
-        };
-
-        fn.prototype.loadOrInit = function () {
-            lists.set(this, JSON.parse(localStorage.getItem(lsIndices.get(this)) || "{}"));
-        };
-
-        fn.prototype.save = function () {
-            localStorage.setItem(lsIndices.get(this), JSON.stringify(lists.get(this)));
-        };
-
-        fn.prototype.saveAndReload = function () {
-            this.save();
-            this.loadOrInit();
-        };
-
-        fn.prototype.add = function (eno) {
-            lists.get(this)[eno] = 1;
-        };
-
-        fn.prototype.remove = function (eno) {
-            delete lists.get(this)[eno];
-        };
-
-        fn.prototype.contains = function (eno) {
-            return eno in lists.get(this);
-        };
-
-        return fn;
-    })();
-
+    function delay(ms) {
+        return new Promise((resolve) => {
+            setTimeout(() => resolve(), ms);
+        });
+    }
 
     function extractENoFromHref(href) {
         const m = /r(\d+)\.html$/.exec(href);
@@ -70,20 +37,253 @@
         return parseInt(/r(\d+)\.html$/.exec(href)[1], 10);
     }
 
-    const FAV_LOCAL_INDEX = "Ibaracity_Fav";
-    const _favENoList = new SavableList(FAV_LOCAL_INDEX);
+    const SIDES = { Ibaracity: 0, Ansinity: 1, Null: 64 };
 
-    function fav(eno, $fav) {
+    const Character = (() => {
+        const DL_DELAY_MS = 5000;
+
+        const fn = function Character(c) {
+            const copyFrom = c || {};
+            this.eno     = ("eno"     in copyFrom) ? copyFrom.eno     : 0;
+            this.name    = ("name"    in copyFrom) ? copyFrom.name    : "";
+            this.plName  = ("plName"  in copyFrom) ? copyFrom.plName  : "";
+            this.side    = ("side"    in copyFrom) ? copyFrom.side    : SIDES.Null;
+            this.iconURL = ("iconURL" in copyFrom) ? copyFrom.iconURL : "p/nii.png";
+        };
+
+        fn.buildCharactersFromList = function ($table) {
+            const sides    = $table.find("td:nth-of-type(1) > span")   .map((i, e) => e.className === "G3" ? SIDES.Ibaracity : SIDES.Ansinity).get();
+            const iconURLs = $table.find("td:nth-of-type(2) > a > img").map((i, e) => e.getAttribute("src")).get();
+            const enos     = $table.find("td:nth-of-type(2) > a")      .map((i, e) => extractENoFromHref(e.getAttribute("href"))).get();
+            const names    = $table.find("td:nth-of-type(3) > a")      .map((i, e) => e.textContent).get();
+            const plNames  = $table.find("td:nth-of-type(4)")          .map((i, e) => e.textContent).get();
+
+            const chars = [];
+            for (let ci = 0, cEnd = enos.length; ci < cEnd; ci++) {
+                chars.push(new Character({
+                    eno:     enos[ci],
+                    name:    names[ci],
+                    plName:  plNames[ci],
+                    side:    sides[ci],
+                    iconURL: iconURLs[ci],
+                }));
+            }
+
+            return chars;
+        };
+
+        const _vDoc = document.implementation.createHTMLDocument();
+        let _delayPromise = null;
+        fn.downloadPartialList = async function (fromENo) {
+            if (_delayPromise) {
+                await _delayPromise;
+            }
+            const html = await $.ajax({ type: "GET", dataType: "text", url: `http://lisge.com/ib/chalist.php?en=${fromENo}` });
+            _delayPromise = delay(DL_DELAY_MS);
+
+            const $table = $(html, _vDoc).find("table[width='950']");
+            return fn.buildCharactersFromList($table);
+        };
+
+        return fn;
+    })();
+
+    const CharactersDB = (() => {
+        const DB_NAME = "IbaracityUserScript";
+        const TABLE_NAME = "Characters";
+        const CURRENT_VERSION = 1;
+
+        let _dbPromise = null;
+        let _db = null;
+        const _lists = new WeakMap();
+
+        const fn = function CharactersDB() {
+            _lists.set(this, []);
+
+            if (_dbPromise) {
+                return;
+            }
+            const dbReq = indexedDB.open(DB_NAME, CURRENT_VERSION);
+            _dbPromise = new Promise((resolve, reject) => {
+                dbReq.onsuccess = (e) => {
+                    _db = e.target.result;
+                    resolve(e);
+                };
+                dbReq.onerror = (e) => {
+                    reject(e);
+                };
+                dbReq.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    const objStore = db.createObjectStore(TABLE_NAME, { keyPath: "eno", autoIncrement: false });
+                };
+            });
+        };
+
+        fn.prototype.promise = function () {
+            return _dbPromise;
+        };
+
+        fn.prototype.get = function (eno) {
+            return _lists.get(this)[eno] || null;
+        };
+
+        fn.prototype.getCopiedList = function () {
+            return _lists.get(this).slice();
+        };
+
+        fn.prototype.getList = function () {
+            return _lists.get(this);
+        };
+
+        fn.prototype.put = function (...characters) {
+            return new Promise((resolve, reject) => {
+                const list = _lists.get(this);
+                const ta = _db.transaction(TABLE_NAME, "readwrite");
+                const objStore = ta.objectStore(TABLE_NAME);
+                for(let c of characters) {
+                    list[c.eno] = c;
+                    objStore.put(c);
+                }
+
+                ta.oncomplete = (e) => resolve(e);
+            });
+        };
+
+        fn.prototype.loadAll = function () {
+            return new Promise((resolve, reject) => {
+                const objStore = _db.transaction(TABLE_NAME, "readonly").objectStore(TABLE_NAME);
+                const oc = objStore.openCursor();
+                oc.onsuccess = (e) => {
+                    const cursor = e.target.result;
+                    if (cursor) {
+                        _lists.get(this)[cursor.key] = cursor.value;
+                        cursor.continue();
+                    }
+                    else {
+                        // no more entities
+                        resolve(e);
+                    }
+                };
+                oc.onerror = (e) => {
+                    reject(e);
+                };
+            });
+        };
+
+        fn.prototype.loadOrDownload = async function (enosRequired) {
+            enosRequired = enosRequired || [];
+            //ダウンロード回数を減らすために要求enoを昇順にソートする
+            enosRequired.sort();
+
+            await this.loadAll();
+            const list = _lists.get(this);
+
+            for (let eno of enosRequired) {
+                if (!list[eno]) {
+                    const dldChars = await Character.downloadPartialList(eno);
+                    await this.put.apply(this, dldChars);
+                }
+            }
+        };
+
+        fn.prototype.download = async function (enos) {
+            if (!enos || enos.length === 0) {
+                return;
+            }
+            //ダウンロード回数を減らすために要求enoを昇順にソートする
+            enos.sort();
+
+            const enosDledSorted = [];
+            let enoDldLastIndex = -1;
+
+            for (let ei = 0, eEnd = enos.length; ei < eEnd; ei++) {
+                const eno = enos[ei];
+
+                const idx = enosDledSorted.indexOf(eno, ++enoDldLastIndex);
+                if (idx >= 0) {
+                    enoDldLastIndex = idx;
+                    continue;
+                }
+
+                const dldChars = await Character.downloadPartialList(eno);
+                await this.put.apply(this, dldChars);
+
+                for (let char of dldChars) {
+                    //ダウンロードされたキャラクターはeno昇順に並んでいるからそのままpushしてよい
+                    enosDledSorted.push(char.eno);
+                }
+            }
+        };
+
+        return fn;
+    })();
+
+    const SavableTable = (() => {
+        //private members
+        const _tables = new WeakMap();
+        const _lsIndices = new WeakMap();
+
+        //thisを利用するためにcallされる必要がある.
+        const setLocalStorageIndex = function (index) {
+            _lsIndices.set(this, index);
+        };
+
+        const fn = function SavableTable (localStorageIndex) {
+            setLocalStorageIndex.call(this, localStorageIndex);
+            this.loadOrInit();
+        };
+
+        fn.prototype.loadOrInit = function () {
+            _tables.set(this, JSON.parse(localStorage.getItem(_lsIndices.get(this)) || "{}"));
+        };
+
+        fn.prototype.save = function () {
+            localStorage.setItem(_lsIndices.get(this), JSON.stringify(_tables.get(this)));
+        };
+
+        fn.prototype.saveAndReload = function () {
+            this.save();
+            this.loadOrInit();
+        };
+
+        fn.prototype.add = function (eno) {
+            _tables.get(this)[eno] = 1;
+        };
+
+        fn.prototype.remove = function (eno) {
+            delete _tables.get(this)[eno];
+        };
+
+        fn.prototype.contains = function (eno) {
+            return eno in _tables.get(this);
+        };
+
+        fn.prototype.getArray = function () {
+            const arr = [];
+            for (let eno in _tables.get(this)) {
+                arr.push(parseInt(eno, 10));
+            }
+            return arr;
+        };
+
+        return fn;
+    })();
+
+    const _favENoList = new SavableTable("Ibaracity_Fav");
+    _favENoList.fav = function($fav) {
+        const eno = $fav.data("eno");
         $fav.data("fav", true).addClass("FavListed");
         _favENoList.add(eno);
         _favENoList.saveAndReload();
     }
-    function unfav(eno, $fav) {
+    _favENoList.unfav= function ($fav) {
+        const eno = $fav.data("eno");
         $fav.data("fav", false).removeClass("FavListed");
         _favENoList.remove(eno);
         _favENoList.saveAndReload();
     }
-    function applyFav(eno, $fav) {
+    _favENoList.applyFav= function ($fav) {
+        const eno = $fav.data("eno");
         if (_favENoList.contains(eno)) {
             $fav.data("fav", true).addClass("FavListed");
         }
@@ -91,54 +291,178 @@
             $fav.data("fav", false).removeClass("FavListed");
         }
     }
-    function applyFavs() {
-        $(".Favorite").each((i, e) => {
-            const $fav = $(e);
-            applyFav($fav.data("eno"), $fav);
-        });
-    }
-    function toggleFav(eno, $fav) {
-        if (_favENoList.contains(eno)) {
-            unfav(eno, $fav);
+    _favENoList.applyFavs= function ($anscestor) {
+        if ($anscestor) {
+            $anscestor.find(".Favorite").each((i, e) => _favENoList.applyFav($(e)));
         }
         else {
-            fav(eno, $fav);
+            $(".Favorite").each((i, e) => _favENoList.applyFav($(e)));
+        }
+    }
+    _favENoList.toggleFav= function ($fav) {
+        const eno = $fav.data("eno");
+        if (_favENoList.contains(eno)) {
+            _favENoList.unfav($fav);
+        }
+        else {
+            _favENoList.fav($fav);
         }
     }
 
     function favClickEvt(e) {
-        const $t = $(e.currentTarget);
-        const eno = $t.data("eno");
-        toggleFav(eno, $t);
+        _favENoList.toggleFav($(e.currentTarget));
     }
 
     const FAV_CSS = ".Favorite:before{content:'\\2661';line-height:100%;display:inline-block;opacity:0.5;}.Favorite:hover:before{opacity:1;}.Favorite.FavListed:before{content:'\\2665';color:#FC0FC0;opacity:1;}";
 
-    function CharaList() {
-        $addStyle(FAV_CSS + "td.Favorite{width:20px;text-align:center;font-size:20px;}.FavFilter{height:26px;width:180px;margin-bottom:6px;margin-left:10px;text-align:center;}");
+    async function CharaList() {
+
+        const _flashdotHTML = "<div class='df-stage' style='display:inline-flex;position:relative;top:-5px;left:11px;'><div class='dot-flashing'></div><div>";
+
+        async function loadAndUpdateDB($charaTable) {
+            const db = new CharactersDB();
+            await db.promise();
+            await db.loadAll();
+
+            await db.put.apply(db, Character.buildCharactersFromList($charaTable));
+            return db;
+        }
+
+        function $buildFavTable(db) {
+            const chars = db.getCopiedList();
+
+            const favChars = [];
+            for (let eno of _favENoList.getArray()) {
+                favChars.push(chars[eno] || new Character({ eno: eno }));
+            }
+
+            return $(buildCharaListTableHTML(favChars));
+        }
+
+        function buildCharaListTableRowHTML(char) {
+            let style, sideTxt;
+            switch (char.side) {
+                case SIDES.Ibaracity:
+                    style = "G";
+                    sideTxt = "茨";
+                    break;
+                case SIDES.Ansinity:
+                    style = "R";
+                    sideTxt = "ア";
+                    break;
+                case SIDES.Null:
+                default:
+                    style = "W";
+                    sideTxt = "";
+                    break;
+            }
+            return `<TR no='${char.eno}'>` +
+                        `<td class='Favorite' data-eno='${char.eno}'></td>` +
+                        `<TD WIDTH=25 ALIGN=CENTER><SPAN CLASS=${style}3>${sideTxt}</SPAN></TD>` +
+                        `<TD WIDTH=25 ALIGN=CENTER><A HREF="k/now/r${char.eno}.html" TARGET=_blank><IMG SRC="${char.iconURL}" WIDTH=30 HEIGHT=30 STYLE="margin:3px 3px 0 3px;"></A></TD>` +
+                        `<TD WIDTH=500 CLASS=${style}3>ENo.${char.eno} <A HREF="k/now/r${char.eno}.html">${char.name}</A></TD>` +
+                        `<TD CLASS=${style}2 NOWRAP>${char.plName}</TD>` +
+                    `</TR>`;
+        }
+
+        function buildCharaListTableHTML(chars) {
+            const trs = [];
+            for (let char of chars) {
+                trs.push(buildCharaListTableRowHTML(char));
+            }
+            return `<TABLE WIDTH=950 CLASS='BLK2 FavTable'>${trs.join("")}</TABLE>`;
+        }
+
+        function insertFavColumn(tr) {
+            const eno = extractENoFromHref($(tr).children("td:nth-of-type(2)").children("a").attr("href"));
+            const $favTd = $("<td class='Favorite'></td>").data({ "eno": eno }).prependTo(tr);
+        }
+
+
+        $addStyle(FAV_CSS + "td.Favorite{width:20px;text-align:center;font-size:20px;}.FavBtn{height:26px;margin-bottom:6px;margin-left:10px;text-align:center;display:inline-block;}.FavFilter{width:200px;}.FavCharInfo{width:160px;}.FavTable tr:nth-of-type(even){background-color:#111111;}");
 
         const $charaTable = $("table[width='950']");
-        const $trs = $charaTable.find("tr");
-        $trs.each((i, e) => {
-            const eno = extractENoFromHref($(e).children("td:nth-of-type(2)").children("a").attr("href"));
-            const $favTd = $("<td class='Favorite'></td>").data({ "eno": eno }).prependTo(e);
 
-            applyFav(eno, $favTd);
-        });
+        $charaTable.find("tr").each((i, e) => insertFavColumn(e));
+        _favENoList.applyFavs($charaTable);
 
-        $charaTable.find("td.Favorite").on("click", favClickEvt);
-        let favFilterEnabled = false;
-        $("<div class='BUT2 FavFilter'>お気に入りフィルタ</div>").insertBefore($charaTable.parent("div")).on("click", () => {
-            if (favFilterEnabled) {
-                $trs.show();
-                favFilterEnabled = false;
+        let db_tmp;
+        try {
+            db_tmp = await loadAndUpdateDB($charaTable);
+        } catch (e) {
+            //DBが利用できないっぽい
+            $charaTable.on("click", "td.Favorite", (e) => favClickEvt);
+            return;
+        }
+        const db = db_tmp;
+
+        const $favTable = $buildFavTable(db).hide().insertAfter($charaTable);
+        _favENoList.applyFavs($favTable);
+
+        $charaTable.on("click", "td.Favorite", (e) => {
+            favClickEvt(e);
+            //テーブル連動
+            const eno = $(e.currentTarget).data("eno");
+            if (_favENoList.contains(eno)) {
+                const char = db.get(eno);
+                const $newRow = $(buildCharaListTableRowHTML(char));
+                $favTable.append($newRow);
+                _favENoList.applyFav($newRow.find("td.Favorite"));
             }
             else {
-                $trs.filter((i, e) => {
-                    return $(e).find(".FavListed").length === 0;
-                }).toggle();
-                favFilterEnabled = true;
+                $favTable.find(`tr[no='${eno}']`).remove();
             }
+        });
+        $favTable.on("click", "td.Favorite", (e) => {
+            favClickEvt(e);
+            $(e.currentTarget).parent("tr").remove();
+            //テーブル連動
+            _favENoList.applyFavs($charaTable);
+        });
+
+        const $favFilter = $("<div class='BUT2 FavBtn FavFilter'>お気に入りキャラ一覧</div>").insertBefore($charaTable.parent("div"));
+        const $updateFavCharInfo = $("<div class='BUT2 FavBtn FavCharInfo'>...の情報取得</div>").hide().insertBefore($charaTable.parent("div"));
+
+        $favFilter.on("click", () => {
+            $charaTable.toggle();
+            $favTable.toggle();
+            $updateFavCharInfo.toggle();
+        });
+
+        let countOfFavCharInfoBtnClicked = 0;
+        $updateFavCharInfo.on("click", async () => {
+            if (countOfFavCharInfoBtnClicked >= 2) {
+                return;
+            }
+
+            if (countOfFavCharInfoBtnClicked == 0) {
+                loadFlashdotCSS();
+                $updateFavCharInfo.html("情報取得中（反映までしばらくお待ち下さい）" + _flashdotHTML).css("width", "500px");
+
+                await db.loadOrDownload(_favENoList.getArray());
+                $updateFavCharInfo.html("...情報取得完了！(再クリックで情報更新)").css("width", "400px");
+            }
+            else if (countOfFavCharInfoBtnClicked == 1) {
+                if (!confirm("情報の更新には時間が掛かります。よろしいですか？\n（サーバーに負担が掛かるため、むやみに情報更新を行わないようにしてください。）")) {
+                    return;
+                }
+
+                loadFlashdotCSS();
+                $updateFavCharInfo.html("情報更新中（反映までしばらくお待ち下さい）" + _flashdotHTML).css("width", "500px");
+
+                await db.download(_favENoList.getArray());
+                $updateFavCharInfo.html("...情報更新完了！").css("width", "180px");
+            }
+            else {
+
+            }
+
+            countOfFavCharInfoBtnClicked++;
+
+            //テーブルの更新
+            $favTable.find("tr").remove();
+            $buildFavTable(db).find("tr").appendTo($favTable);
+            _favENoList.applyFavs($favTable);
         });
     }
 
@@ -148,7 +472,7 @@
         const eno = parseInt(/\d+$/.exec($("div.CEN").html()) || "0", 10);
 
         const $fav = $("<div class='Favorite'></td>").data({ "eno": eno }).appendTo("div.CSEAT").on("click", favClickEvt);
-        applyFav(eno, $fav)
+        _favENoList.applyFav($fav)
     }
 
     function TalkPage() {
@@ -163,9 +487,9 @@
 
             const $fav = $("<div class='Favorite'></div>").data({ "eno": eno }).insertAfter(e).on("click", (e) => {
                 favClickEvt(e);
-                applyFavs();
+                _favENoList.applyFavs();
             });
-            applyFav(eno, $fav);
+            _favENoList.applyFav($fav);
         });
     }
 
