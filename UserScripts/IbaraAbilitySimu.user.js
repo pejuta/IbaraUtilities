@@ -5,7 +5,7 @@
 // @include     http://lisge.com/ib/act_skill.php*
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAbilitySimu.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAbilitySimu.user.js
-// @version     1.0.1
+// @version     1.0.2
 // @grant       none
 // ==/UserScript==
 (($) => {
@@ -116,21 +116,28 @@
             return $(queryArray.join(",")).filter("[ZM!='1']");　//習得済みスキルの排除[ZM!='1']
         };
 
-        fn.prototype.spinUp = function (id) {
-            const abi = this.abilities[id];
+        fn.prototype.spinUp = function (id, spins) {
+            if (spins && spins <= 0) {
+                return false;
+            }
+            spins = spins || 1;
 
+            const abi = this.abilities[id];
             if (abi.currentValue >= 99) {
                 return false;
             }
+            spins = Math.min(99 - abi.currentValue, spins);
 
             const cpfp = abi.isInou() ? this.inou : this.seisan;
-            if(abi.currentValue++ < abi.initialValue){
-                cpfp.fp++;
+            if(abi.currentValue < abi.initialValue){
+                cpfp.fp += spins;
             }
-            cpfp.cp--;
+            abi.currentValue += spins;
+            cpfp.cp -= spins;
 
-            if ((abi.currentValue % 5) === 0 && abi.currentValue > 0) {
-                this.$queryLearningSkillsDif(id, abi.currentValue).addClass("GETSK");
+            const skillTiers = Math.floor((((abi.currentValue - spins) % 5) + spins) / 5, 0);
+            for (let ski = 0; ski < skillTiers; ski++) {
+                this.$queryLearningSkillsDif(id, abi.currentValue - ski * 5).addClass("GETSK");
             }
 
             this.applyAbility(id);
@@ -139,21 +146,28 @@
             return true;
         };
 
-        fn.prototype.spinDown = function (id) {
-            const abi = this.abilities[id];
+        fn.prototype.spinDown = function (id, spins) {
+            if (spins && spins <= 0) {
+                return false;
+            }
+            spins = spins || 1;
 
+            const abi = this.abilities[id];
             if (abi.currentValue <= 0) {
                 return false;
             }
+            spins = Math.min(abi.currentValue, spins);
 
             const cpfp = abi.isInou() ? this.inou : this.seisan;
-            if(abi.currentValue-- <= abi.initialValue) {
-                cpfp.fp--;
+            if(abi.currentValue <= abi.initialValue) {
+                cpfp.fp -= spins;
             }
-            cpfp.cp++;
+            abi.currentValue -= spins;
+            cpfp.cp += spins;
 
-            if ((abi.currentValue % 5) === 4) {
-                this.$queryLearningSkillsDif(id, abi.currentValue + 1).removeClass("GETSK");
+            const skillTiers = Math.floor(((abi.currentValue % 5) + spins) / 5, 0);
+            for (let ski = 0; ski < skillTiers; ski++) {
+                this.$queryLearningSkillsDif(id, abi.currentValue + spins - ski * 5).removeClass("GETSK");
             }
 
             this.applyAbility(id);
@@ -180,15 +194,29 @@
     const _aMng = new AbilityManager();
 
     function spinnerClickEvent(evt) {
+        //ctrlキー押下時は5回分スピンした扱いにする
+        //shiftキー押下時は10回分スピンした扱いにする
+        //ctrl+shiftキー押下時は20回分スピンした扱いにする
+        let spins = 1;
+        if (evt.shiftKey && evt.ctrlKey) {
+            spins = 20;
+        }
+        else if (evt.shiftKey) {
+            spins = 10;
+        }
+        else if (evt.ctrlKey) {
+            spins = 5;
+        }
+
         const abilityId = parseInt($(this).data("AbilityId"), 10);
         const spinMode = SpinModeTypes[$(this).data("mode")];
 
         let spinnedSuccessfully;
         if (spinMode ===  SpinModeTypes.up) {
-            spinnedSuccessfully = _aMng.spinUp(abilityId);
+            spinnedSuccessfully = _aMng.spinUp(abilityId, spins);
         }
         else if (spinMode === SpinModeTypes.down) {
-            spinnedSuccessfully = _aMng.spinDown(abilityId);
+            spinnedSuccessfully = _aMng.spinDown(abilityId, spins);
         }
         else {
             throw new Errer("正体不明のスピナーイベントが検出されました。");
