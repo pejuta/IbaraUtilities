@@ -219,14 +219,14 @@
         const spinMode = SpinModeTypes[$(this).data("mode")];
 
         let spinnedSuccessfully;
-        if (spinMode ===  SpinModeTypes.up) {
+        if (spinMode === SpinModeTypes.up) {
             spinnedSuccessfully = _aMng.spinUp(abilityId, spins);
         }
         else if (spinMode === SpinModeTypes.down) {
             spinnedSuccessfully = _aMng.spinDown(abilityId, spins);
         }
         else {
-            throw new Errer("正体不明のスピナーイベントが検出されました。");
+            throw new Error("正体不明のスピナーイベントが検出されました。");
         }
 
         if (!spinnedSuccessfully) {
