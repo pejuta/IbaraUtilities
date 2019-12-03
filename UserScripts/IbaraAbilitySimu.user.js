@@ -9,6 +9,7 @@
 // @grant       none
 // ==/UserScript==
 (($) => {
+    "use strict";
     const SpinModeTypes = { "up":0 , "down":1 };
 
     const INOU_ID_MIN = 1;
