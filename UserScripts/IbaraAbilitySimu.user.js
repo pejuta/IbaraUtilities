@@ -5,7 +5,7 @@
 // @include     http://lisge.com/ib/act_skill.php*
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAbilitySimu.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAbilitySimu.user.js
-// @version     1.0.2.3
+// @version     1.0.2.4
 // @grant       none
 // ==/UserScript==
 (($) => {
@@ -138,7 +138,7 @@
 
             const skillTiers = Math.floor((((abi.currentValue - spins) % 5) + spins) / 5, 0);
             for (let ski = 0; ski < skillTiers; ski++) {
-                this.$queryLearningSkillsDif(id, abi.currentValue - ski * 5).addClass("GETSK");
+                this.$queryLearningSkillsDif(id, abi.currentValue - ski * 5).show().addClass("GETSK");
             }
 
             this.applyAbility(id);
@@ -168,7 +168,7 @@
 
             const skillTiers = Math.floor(((abi.currentValue % 5) + spins) / 5, 0);
             for (let ski = 0; ski < skillTiers; ski++) {
-                this.$queryLearningSkillsDif(id, abi.currentValue + spins - ski * 5).removeClass("GETSK");
+                this.$queryLearningSkillsDif(id, abi.currentValue + spins - ski * 5).show().removeClass("GETSK");
             }
 
             this.applyAbility(id);
@@ -227,7 +227,14 @@
             return false;
         }
 
-        showAllSkills();
+        if (_aMng.canSubmit()) {
+            $("input[type=submit]").prop("disabled", false).css("opacity", "1");
+        }
+        else {
+            $("input[type=submit]").prop("disabled", true).css("opacity", "0.5");
+        }
+
+        //showAllSkills();
         Search($('#WORDS1').val(), 1);
     }
 
@@ -242,7 +249,7 @@
 
     $("form").on("submit", () => {
         if (!_aMng.canSubmit()) {
-            alert("CPあるいはFPがマイナス値のため宣言を送信できません。");
+            //alert("CPあるいはFPがマイナス値のため宣言を送信できません。");
             return false;
         }
         return true;
