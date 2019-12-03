@@ -5,7 +5,7 @@
 // @include     http://lisge.com/ib/act_skill.php*
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAbilitySimu.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAbilitySimu.user.js
-// @version     1.0.2
+// @version     1.0.2.1
 // @grant       none
 // ==/UserScript==
 (($) => {
@@ -246,4 +246,6 @@
         }
         return true;
     });
+
+    $("form[name='act']>dl:first").find("br:last").before("\nCtrlキーを押しながらクリックで5CP、Shiftキーで10CP、Ctrl+Shiftキーで20CP分のLVを一度に変更できます。");
 })(jQuery);
