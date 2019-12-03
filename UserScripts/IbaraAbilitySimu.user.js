@@ -5,7 +5,7 @@
 // @include     http://lisge.com/ib/act_skill.php*
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAbilitySimu.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAbilitySimu.user.js
-// @version     1.0.2.2
+// @version     1.0.2.3
 // @grant       none
 // ==/UserScript==
 (($) => {
@@ -81,7 +81,7 @@
                 abiLevelColor = "#666666";
             }
 
-            $("#IN" + id).css("color", abiLevelColor).text(abi.currentValue);
+            $("#IN" + id).css("color", abiLevelColor);
         };
 
         fn.prototype.applyAbility = function (id) {
