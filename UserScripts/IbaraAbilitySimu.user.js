@@ -5,7 +5,7 @@
 // @include     http://lisge.com/ib/act_skill.php*
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAbilitySimu.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAbilitySimu.user.js
-// @version     1.0.2.1
+// @version     1.0.2.2
 // @grant       none
 // ==/UserScript==
 (($) => {
@@ -85,9 +85,10 @@
         };
 
         fn.prototype.applyAbility = function (id) {
-            $("#LV" + id).val(this.initialValue);
-            $("#IN" + id).text(this.currentValue);
-            $("#PM" + id).val(this.currentValue - this.initialValue);
+            const abi = this.abilities[id];
+            $("#LV" + id).val(abi.initialValue);
+            $("#IN" + id).text(abi.currentValue);
+            $("#PM" + id).val(abi.currentValue - abi.initialValue);
             this.applyAbilityStyle(id);
         };
 
