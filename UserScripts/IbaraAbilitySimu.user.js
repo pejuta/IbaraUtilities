@@ -5,7 +5,7 @@
 // @include     http://lisge.com/ib/act_skill.php*
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAbilitySimu.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAbilitySimu.user.js
-// @version     1.0.2.4
+// @version     1.0.2.5
 // @grant       none
 // ==/UserScript==
 (($) => {
@@ -141,6 +141,9 @@
                 this.$queryLearningSkillsDif(id, abi.currentValue - ski * 5).show().addClass("GETSK");
             }
 
+            if (skillTiers > 0) {
+                Search($('#WORDS1').val(), 1);
+            }
             this.applyAbility(id);
             this.applyCPFP();
 
@@ -171,6 +174,9 @@
                 this.$queryLearningSkillsDif(id, abi.currentValue + spins - ski * 5).show().removeClass("GETSK");
             }
 
+            if (skillTiers > 0) {
+                Search($('#WORDS1').val(), 1);
+            }
             this.applyAbility(id);
             this.applyCPFP();
 
@@ -233,9 +239,6 @@
         else {
             $("input[type=submit]").prop("disabled", true).css("opacity", "0.5");
         }
-
-        //showAllSkills();
-        Search($('#WORDS1').val(), 1);
     }
 
     $("img[src='p/sminus.png'],img[src='p/splus.png']").each((i, e) => {
