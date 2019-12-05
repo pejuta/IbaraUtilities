@@ -37,3 +37,6 @@
 ## Pages
 ### [fullmap.html](https://pejuta.github.io/IbaraUtilities/Pages/fullmap.html)
 - ハザマの全体地図（グリッド付き）です。簡単なお絵かき機能があるのでちょっとした移動計画に使えます。
+
+## Bookmarklets
+様々なブックマークレットを置いてあります。
