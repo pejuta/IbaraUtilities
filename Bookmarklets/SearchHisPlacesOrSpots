@@ -1,0 +1,1 @@
+javascript:(()=>{const e=prompt("ENo.？");if(e){const p=confirm("OK: プレイス, キャンセル: スポット");location=`http://lisge.com/ib/map.php?tr={p+0}&en=${e}`;}})();
