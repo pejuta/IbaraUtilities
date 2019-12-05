@@ -1,0 +1,1 @@
+javascript:(()=>{let e=prompt("ENo.？");if(e){let t=prompt("対象回？\n例: now, 0, 1s0","now");if(t)location=`http://lisge.com/ib/k/${t}/r${e}.html`;}})();
