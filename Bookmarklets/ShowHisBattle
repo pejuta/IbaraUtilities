@@ -1,0 +1,1 @@
+javascript:(()=>{let e=prompt("ENo.？");if(!e)return;let t=prompt("対象回？\n例: now, 0, 1s0","now");if(t){let i=prompt("対象戦闘Index?\n通常戦闘:1","1");if(i)location=`http://lisge.com/ib/k/${t}/r${e}b${i}.html`;}})();
