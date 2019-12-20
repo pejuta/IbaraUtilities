@@ -5,7 +5,7 @@
 // @include     http://lisge.com/ib/act_skill.php*
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAbilitySimu.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAbilitySimu.user.js
-// @version     1.0.2.6
+// @version     1.0.2.7
 // @grant       none
 // ==/UserScript==
 (($) => {
@@ -164,7 +164,7 @@
             spins = Math.min(abi.currentValue, spins);
 
             const cpfp = abi.isInou() ? this.inou : this.seisan;
-            const fpToLose = Math.min(abi.initialValue - abi.currentValue, spins);
+            const fpToLose = Math.min(spins - (abi.currentValue - abi.initialValue), spins);
             if(fpToLose > 0) {
                 cpfp.fp -= fpToLose;
             }
