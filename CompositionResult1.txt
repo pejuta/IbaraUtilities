@@ -1,0 +1,92 @@
+﻿* 合成リスト *
+目次として使用できるように、アイテムの種類1と2を入れ替えた重複を意図的に含めています。結果上の合成順とは異なる場合があります。
+
+ * ---------------------------------------- *
+
+成功LV5  失敗LV4 	>> 駄物 (素材 強さ10) ［武器］攻撃10(LV50)［防具］活力10(LV50)［装飾］体力10(LV50)
+
+駄物 (素材 強さ10 Composited) + 不思議な牙 (素材 強さ10 Initial)
+	成功	1/r931.html	LV20
+駄物 (素材 強さ10 Composited) + 不思議な防具 (防具 強さ10 Initial)
+	成功	1/r931.html	LV20
+不思議な牙 (素材 強さ10 Initial) + 駄物 (素材 強さ10 Composited)
+	成功	1/r931.html	LV20
+不思議な牙 (素材 強さ10 Initial) + 不思議な装飾 (装飾 強さ10 Initial)
+	成功	1/r882.html	LV20
+不思議な牙 (素材 強さ10 Initial) + 不思議な武器 (武器 強さ10 Initial)
+	成功	1/r329.html	LV5 
+	失敗	1/r821.html	LV0 
+不思議な食材 (食材 強さ10 Initial) + 不思議な装飾 (装飾 強さ10 Initial)
+	成功	1/r528.html	LV10
+不思議な食材 (食材 強さ10 Initial) + 不思議な武器 (武器 強さ10 Initial)
+	成功	1/r321.html	LV20
+不思議な食材 (食材 強さ10 Initial) + 不思議な防具 (防具 強さ10 Initial)
+	成功	1/r553.html	LV20
+不思議な石 (素材 強さ10 Initial) + 不思議な装飾 (装飾 強さ10 Initial)
+	成功	1/r560.html	LV10
+	失敗	1/r1426.html	LV0 
+不思議な石 (素材 強さ10 Initial) + 不思議な武器 (武器 強さ10 Initial)
+	成功	1/r1013.html	LV20
+	失敗	1/r1420.html	LV0 
+不思議な石 (素材 強さ10 Initial) + 不思議な防具 (防具 強さ10 Initial)
+	成功	1/r138.html	LV20
+	失敗	1/r1351.html	LV0 
+不思議な装飾 (装飾 強さ10 Initial) + 不思議な牙 (素材 強さ10 Initial)
+	成功	1/r882.html	LV20
+不思議な装飾 (装飾 強さ10 Initial) + 不思議な食材 (食材 強さ10 Initial)
+	成功	1/r528.html	LV10
+不思議な装飾 (装飾 強さ10 Initial) + 不思議な石 (素材 強さ10 Initial)
+	成功	1/r560.html	LV10
+	失敗	1/r1426.html	LV0 
+不思議な装飾 (装飾 強さ10 Initial) + 不思議な武器 (武器 強さ10 Initial)
+	成功	1/r2.html	LV20
+不思議な装飾 (装飾 強さ10 Initial) + 不思議な防具 (防具 強さ10 Initial)
+	成功	1/r1000.html	LV20
+不思議な武器 (武器 強さ10 Initial) + 不思議な牙 (素材 強さ10 Initial)
+	成功	1/r329.html	LV5 
+	失敗	1/r821.html	LV0 
+不思議な武器 (武器 強さ10 Initial) + 不思議な食材 (食材 強さ10 Initial)
+	成功	1/r321.html	LV20
+不思議な武器 (武器 強さ10 Initial) + 不思議な石 (素材 強さ10 Initial)
+	成功	1/r1013.html	LV20
+	失敗	1/r1420.html	LV0 
+不思議な武器 (武器 強さ10 Initial) + 不思議な装飾 (装飾 強さ10 Initial)
+	成功	1/r2.html	LV20
+不思議な武器 (武器 強さ10 Initial) + 不思議な防具 (防具 強さ10 Initial)
+	成功	1/r329.html	LV5 
+	失敗	1/r187.html	LV4 
+不思議な防具 (防具 強さ10 Initial) + 駄物 (素材 強さ10 Composited)
+	成功	1/r931.html	LV20
+不思議な防具 (防具 強さ10 Initial) + 不思議な食材 (食材 強さ10 Initial)
+	成功	1/r553.html	LV20
+不思議な防具 (防具 強さ10 Initial) + 不思議な石 (素材 強さ10 Initial)
+	成功	1/r138.html	LV20
+	失敗	1/r1351.html	LV0 
+不思議な防具 (防具 強さ10 Initial) + 不思議な装飾 (装飾 強さ10 Initial)
+	成功	1/r1000.html	LV20
+不思議な防具 (防具 強さ10 Initial) + 不思議な武器 (武器 強さ10 Initial)
+	成功	1/r329.html	LV5 
+	失敗	1/r187.html	LV4 
+
+ * ---------------------------------------- *
+
+成功LV10 失敗LV5 	>> 何か柔らかい物体 (素材 強さ10) ［武器］治癒10(LV20)［防具］命脈10(LV25)［装飾］防御10(LV20)
+
+不思議な牙 (素材 強さ10 Initial) + 不思議な食材 (食材 強さ10 Initial)
+	成功	1/r675.html	LV15
+	失敗	1/r187.html	LV4 
+不思議な牙 (素材 強さ10 Initial) + 不思議な石 (素材 強さ10 Initial)
+	成功	1/r1177.html	LV10
+	失敗	1/r307.html	LV5 
+不思議な食材 (食材 強さ10 Initial) + 不思議な牙 (素材 強さ10 Initial)
+	成功	1/r675.html	LV15
+	失敗	1/r187.html	LV4 
+不思議な食材 (食材 強さ10 Initial) + 不思議な石 (素材 強さ10 Initial)
+	成功	1/r1492.html	LV20
+	失敗	1/r307.html	LV5 
+不思議な石 (素材 強さ10 Initial) + 不思議な牙 (素材 強さ10 Initial)
+	成功	1/r1177.html	LV10
+	失敗	1/r307.html	LV5 
+不思議な石 (素材 強さ10 Initial) + 不思議な食材 (食材 強さ10 Initial)
+	成功	1/r1492.html	LV20
+	失敗	1/r307.html	LV5 
