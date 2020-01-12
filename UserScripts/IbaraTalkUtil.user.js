@@ -3,7 +3,7 @@
 // @namespace   https://twitter.com/11powder
 // @description 交流ってスバラシティ
 // @include     http://lisge.com/ib/talk.php*
-// @version     1.0.7.1
+// @version     1.0.8
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @grant       none
@@ -355,30 +355,32 @@
 
     var EnableSayPreview = (function (){
         //format: "ICON_URL", "SENDER_NAME", "SAY_HTML", "ANKER_INFO", "MAX_CHARS_NUM", "CHARS_NUM"
-        function GetSayTemplate(senderEno, isResponse) {
-            var inner = "<div class='{CNT_CLASS_NAME}'><table cellpadding='0' cellspacing='0' class='SE0' style='width:{WIDTH_PX};'><tr valign='TOP'>" +
-                            "<td width='70'><img src='{ICON_URL}' class='RE2' alt='RE'></td>" +
-                            "<td class='F3'>" +
-                                "{RESPONSE}" +
-                                "<a href='#'><span class='Y3'>{SENDER_NAME}({SENDER_ENO})</span></a><br>{SAY_HTML}" +
-                            "</td>" +
-                        "</tr></table></div>";
+        var template = "<div class='{CNT_CLASS_NAME}'><table cellpadding='0' cellspacing='0' class='SE0' style='width:{WIDTH_PX};'><tr valign='TOP'>" +
+                           "<td width='70'><img src='{ICON_URL}' class='RE2' alt='RE'></td>" +
+                           "<td class='F3'>" +
+                               "{RESPONSE}" +
+                               "<a href='#'><span class='Y3'>{SENDER_NAME}({SENDER_ENO})</span></a><br>{SAY_HTML}" +
+                           "</td>" +
+                       "</tr></table></div>";
+        function GetSayTemplate(senderEno, isResponse, rows) {
             var className;
+            var responseHtml;
             if (isResponse) {
                 className = "SE4";
-                inner = format(inner, { "RESPONSE": "<a class='F1' href='#'>＞{ANKER_INFO} <br></a>" });
+                responseHtml = "<a class='F1' href='#'>＞返信 <br></a>";
             } else {
                 className = "SE3";
-                inner = format(inner, { "RESPONSE": "" });
+                responseHtml = "";
             }
 
             var widthPx = "900px";
-            if ($("#PLSBN3").text().includes == "２列") {
+            if (rows > 1) {
                 widthPx = "440px";
             }
-            inner = format(inner, { "WIDTH_PX": widthPx });
 
-            inner = format(inner, {
+            var inner = format(template, {
+                "RESPONSE": responseHtml,
+                "WIDTH_PX": widthPx,
                 "CNT_CLASS_NAME": className,
                 "SENDER_ENO": senderEno,
             });
@@ -403,16 +405,11 @@
 
         var _iconUrlArray = ExtractOrLoadIconUrlArray();
         var myEno = ReadENoTextByCookie() || "";
-        var _template_say = GetSayTemplate(myEno);
-        var _templete_res = GetSayTemplate(myEno, true);
         function SayPreviewEvent(evt) {
             var $parent = $(evt.currentTarget).parent();
-            var template = "";
-            if (IsResponseForm($parent)) {
-                template = format(_templete_res, { "ANKER_INFO": "返信" });
-            } else {
-                template = _template_say;
-            }
+            var rows = $("#PLSBN3").text().includes("２列") ? 1 : 2;
+
+            var template = GetSayTemplate(myEno, IsResponseForm($parent), rows);
 
             var sayArgs = {
                 $InsertAfter: $parent,
@@ -427,8 +424,6 @@
             UpdateSayPreview(sayArgs);
         }
 
-        var _sayForm_Selector = "form[name='say']";
-        var _saySearch_Selector = "form[name='sch']";
         var _sayText_Selector = "textarea[name^='dt_mes']";
         var _sayName_Selector = "input[name^='dt_ai']";
         var _sayIcon_Selector = "select[name^='dt_ic']";
@@ -443,8 +438,13 @@
                 .on("keyup input",_sayName_Selector, callback)
                 .on("change", _sayIcon_Selector, callback);
 
-            $(_sayForm_Selector).closest("td").css({ "overflow": "visible", "max-width": "700px" });
-            $(_saySearch_Selector).closest("td").css("vertical-align", "top");
+            $("form[name='say']").closest("td").css({ "overflow": "visible", "max-width": "700px" });
+            $("form[name='sch']").closest("td").css("vertical-align", "top");
+
+            var $says = $(".SE3,.SE4");
+            if ($says.length > 0) {
+                $says.css({ "overflow": "visible", "max-width": "calc(100% - 20px)" });
+            }
         }
 
         return RegisterFormEvent;
