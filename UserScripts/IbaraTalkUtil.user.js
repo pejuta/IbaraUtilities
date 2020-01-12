@@ -3,7 +3,7 @@
 // @namespace   https://twitter.com/11powder
 // @description 交流ってスバラシティ
 // @include     http://lisge.com/ib/talk.php*
-// @version     1.0.6
+// @version     1.0.6.1
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @grant       none
@@ -394,7 +394,7 @@
 
     var EnableCloseTagAutocompletion = (function(){
 
-        var _ornamentTagNamePattern = "((?:F(?=\\d)|I|S|U)[1-7]?)";
+        var _ornamentTagNamePattern = "((?:F(?=\\d)|B|I|S|U)[1-7]?)";
         var _maxOrnamentTagChars = 4; //_ornamentTagNamePatternにマッチする最大文字数+2
 
         var _reTagStart  = new RegExp("<" + _ornamentTagNamePattern + ">", "gi");
