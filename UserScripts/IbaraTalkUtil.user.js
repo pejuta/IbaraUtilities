@@ -3,7 +3,7 @@
 // @namespace   https://twitter.com/11powder
 // @description 交流ってスバラシティ
 // @include     http://lisge.com/ib/talk.php*
-// @version     1.0.5
+// @version     1.0.6
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @grant       none
@@ -175,6 +175,7 @@
                 case "F":
                     elemType = "span";
                     break;
+                case "B":
                 case "I":
                 case "S":
                 case "U":
@@ -197,7 +198,7 @@
 
         return function (html) {
             var escapedHtml = escapeHtml(html);
-            var re_Tag_CharDeco = new RegExp(escapeHtml("<(F(?=\\d)|I|S|U)([1-7]?)>(.*?)</\\1\\2>"), "ig");
+            var re_Tag_CharDeco = new RegExp(escapeHtml("<(F(?=\\d)|B|I|S|U)([1-7]?)>(.*?)</\\1\\2>"), "ig");
 
             var replacedHtml = lineBreakToBR(escapedHtml).replace(/&lt;br&gt;/gi, "<BR>");
             for (var i = 0; i < 2; i++) {
