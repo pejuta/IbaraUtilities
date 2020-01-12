@@ -3,7 +3,7 @@
 // @namespace   https://twitter.com/11powder
 // @description 交流ってスバラシティ
 // @include     http://lisge.com/ib/talk.php*
-// @version     1.0.7
+// @version     1.0.7.1
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @grant       none
@@ -310,7 +310,7 @@
                                     "・<b class='O3'>Ctrl+Shift+Enterキー</b>を押すと、送信ボタンを押したのと同様にその発言内容を送信します。<br>" +
                                     "・<b class='O3'>Tab</b>キーを押すと、欠けている装飾閉じタグ(<b class='Y3'>" + escapeHtml("<B>, <f4>") + "</b>など)を自動的に補完します。<br>" +
                                     "・タグ名(<b class='Y3'>i4, S</b>など)を入力してからTabキーを押すと、指定の装飾タグを自動入力します。<br>" +
-                                    "　<span class='P3'>例： f5 -> " + escapeHtml("<f5></f5>") + "</span><br>" +
+                                    "　<span class='P3'>例： f5 ⇒ " + escapeHtml("<f5></f5>") + "</span><br>" +
                                     "<br>　(hint) 入力自動補完に対応しているタグ名の一覧（小文字可、半角のみ）：<br><b class='Y3'>　" +
                                          escapeHtml("F[1-7] B B[1-7] I I[1-7] S S[1-7] U U[1-7]") +
                                     "</b>" +
