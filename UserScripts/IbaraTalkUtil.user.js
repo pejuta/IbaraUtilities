@@ -3,7 +3,7 @@
 // @namespace   https://twitter.com/11powder
 // @description 交流ってスバラシティ
 // @include     http://lisge.com/ib/talk.php*
-// @version     1.0.8
+// @version     1.0.8.1
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @grant       none
@@ -439,7 +439,7 @@
                 .on("change", _sayIcon_Selector, callback);
 
             $("form[name='say']").closest("td").css({ "overflow": "visible", "max-width": "700px" });
-            $("form[name='sch']").closest("td").css("vertical-align", "top");
+            $("form[name='sch']").closest("td").css({ "vertical-align": "top", "padding-top": "20px" });
 
             var $says = $(".SE3,.SE4");
             if ($says.length > 0) {
