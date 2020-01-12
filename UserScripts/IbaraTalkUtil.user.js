@@ -3,19 +3,15 @@
 // @namespace   https://twitter.com/11powder
 // @description 交流ってスバラシティ
 // @include     http://lisge.com/ib/talk.php*
-// @version     1.0.6.1
+// @version     1.0.7
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @grant       none
 // ==/UserScript==
-//
-// リアルタイム交流ページに以下の機能を追加します。
-// ・動的プレビュー
-// ・tabキー押下時などに綴じタグの自動補完
-// ・BRタグの自動置換
-// ・Ctrl+Shift+Enterによる発言送信
 (function ($) {
     "use strict";
+
+    var ScriptName = "IbaraTalkUtil";
 
     //アイコン一覧の有無で交流ページかどうかを判断する
     if(!document.getElementById("CL1")) return;
@@ -125,7 +121,7 @@
     /*プレビュー関連メソッド*/
     //format: "{PREVIEW_TYPE}", "CHARS_NUM","MAX_CHARS_NUM" "INNER_HTML"
     function GetPreviewContainerTemplate() {
-        return "<div class='Preview'><div class='Y3'>《{PREVIEW_TYPE}プレビュー》</div>{INNER_HTML}</div>";
+        return "<div class='Preview'><div class='Y3 PreviewHeader'>《{PREVIEW_TYPE}プレビュー》 <a href='#'> [Help] </a></div>{INNER_HTML}</div>";
     }
 
     //更新不要
@@ -164,24 +160,51 @@
         return $preview;
     }
 
+    var OrnamentTagMap = Object.freeze({
+        "F": {
+            tagName: "span",
+            pattern: "F(?=\\d)"
+        },
+        "B": {
+            tagName: "b",
+            pattern: "B"
+        },
+        "I": {
+            tagName: "i",
+            pattern: "I"
+        },
+        "S": {
+            tagName: "s",
+            pattern: "S"
+        },
+        "U": {
+            tagName: "u",
+            pattern: "U"
+        }
+    });
+
+    var MaxOrnamentTagNameChars = 4; //ornamentTagNamePatternにマッチする最大文字数+2
+    var OrnamentTagNamePattern;
+    var OrnamentTagNamePatternToCapture;
+    (function() {
+        var ornamentTagPatterns = [];
+        for (var key in OrnamentTagMap) {
+            ornamentTagPatterns.push(OrnamentTagMap[key].pattern);
+        }
+
+        var tagPattern = ornamentTagPatterns.join("|");
+        OrnamentTagNamePattern          = "(?:" + tagPattern + ")[1-7]?";
+        OrnamentTagNamePatternToCapture = "(" + tagPattern + ")([1-7]?)";
+    })();
+
+
     //更新不要
     //
     //HTMLをシステム上正しい表現に置き換える。
     var HtmlToCorrectExpr = (function () {
         var replacer = function(match, p1, p2, p3, offset, string){
-            var html = "",
-                elemType;
-            switch(p1.toUpperCase()){
-                case "F":
-                    elemType = "span";
-                    break;
-                case "B":
-                case "I":
-                case "S":
-                case "U":
-                    elemType = p1;
-                    break;
-            }
+            var html = "";
+            var elemType = OrnamentTagMap[p1.toUpperCase()].tagName;
             if (p2) {
                 return format("<{TYPE} class='F{SIZE}'>{VALUE}</{TYPE}>", {
                     "TYPE": elemType,
@@ -196,15 +219,16 @@
             }
         };
 
+
+        var reOrnamentTags = new RegExp(escapeHtml("<" + OrnamentTagNamePatternToCapture + ">(.*?)</\\1\\2>"), "ig");
         return function (html) {
             var escapedHtml = escapeHtml(html);
-            var re_Tag_CharDeco = new RegExp(escapeHtml("<(F(?=\\d)|B|I|S|U)([1-7]?)>(.*?)</\\1\\2>"), "ig");
 
             var replacedHtml = lineBreakToBR(escapedHtml).replace(/&lt;br&gt;/gi, "<BR>");
             for (var i = 0; i < 2; i++) {
                 replacedHtml = replacedHtml.replace(/&lt;([1-9][0-9]?D[1-9][0-9]?[0-9]?)&gt;/i, "<span class='DX'>【 <b>$1</b>：[賽の目] 】</span>");
             }
-            return replaceLoop(replacedHtml, re_Tag_CharDeco, replacer);
+            return replaceLoop(replacedHtml, reOrnamentTags, replacer);
         };
     })();
 
@@ -276,27 +300,83 @@
         $preview.html(previewHtml).css("display", "block");
     }
 
+    var TalkUtilHelp = (function(){
+        var html = "<div class='SE3'><table cellpadding='0' cellspacing='0' class='SE0' style='width:900px;'><tr valign='TOP'>" +
+                            "<td width='70'><img src='p/iba_icon.png' class='RE2' alt='RE'></td>" +
+                            "<td class='F3'>" +
+                                "<a><span class='Y4'>" + ScriptName + "の機能・使い方</span></a><br>" +
+                                    "<div style='margin:10px;'>" +
+                                    "・入力した発言内容を自動的に解析してプレビューを表示します。<br>" +
+                                    "・<b class='O3'>Ctrl+Shift+Enterキー</b>を押すと、送信ボタンを押したのと同様にその発言内容を送信します。<br>" +
+                                    "・<b class='O3'>Tab</b>キーを押すと、欠けている装飾閉じタグ(<b class='Y3'>" + escapeHtml("<B>, <f4>") + "</b>など)を自動的に補完します。<br>" +
+                                    "・タグ名(<b class='Y3'>i4, S</b>など)を入力してからTabキーを押すと、指定の装飾タグを自動入力します。<br>" +
+                                    "　<span class='P3'>例： f5 -> " + escapeHtml("<f5></f5>") + "</span><br>" +
+                                    "<br>　(hint) 入力自動補完に対応しているタグ名の一覧（小文字可、半角のみ）：<br><b class='Y3'>　" +
+                                         escapeHtml("F[1-7] B B[1-7] I I[1-7] S S[1-7] U U[1-7]") +
+                                    "</b>" +
+                                    "</div>" +
+                            "</td>" +
+                        "</tr></table></div>";
+        var $container = $("<div></div>").html(html).css({ "position": "absolute", "z-index": 2 });
 
+        var getOnClickHandler = function(_this) {
+            return function() {
+                if (_this.attachedElement === this) {
+                    $container.hide();
+                    _this.attachedElement = null;
+                }
+                else {
+                    $container.insertAfter(this).show();
+                    _this.attachedElement = this;
+                }
+            };
+        };
+
+        var fn = function() {
+            this.attachedElement = null;
+            this.onClickHandler = getOnClickHandler(this);
+        };
+
+        fn.prototype.Enable = function(elem, selector) {
+            if (selector) {
+                $(elem).on("click", selector, this.onClickHandler);
+            } else {
+                $(elem).on("click", this.onClickHandler);
+            }
+            var _this = this;
+            $container.on("click", function() {
+                $container.hide();
+                _this.attachedElement = null;
+            });
+        };
+
+        return fn;
+    })();
 
     var EnableSayPreview = (function (){
         //format: "ICON_URL", "SENDER_NAME", "SAY_HTML", "ANKER_INFO", "MAX_CHARS_NUM", "CHARS_NUM"
         function GetSayTemplate(senderEno, isResponse) {
-            var inner = "<div class='{CNT_CLASS_NAME}'><table cellpadding='0' cellspacing='0' class='SE0' style='width:440px;'><tr valign='TOP'>" +
+            var inner = "<div class='{CNT_CLASS_NAME}'><table cellpadding='0' cellspacing='0' class='SE0' style='width:{WIDTH_PX};'><tr valign='TOP'>" +
                             "<td width='70'><img src='{ICON_URL}' class='RE2' alt='RE'></td>" +
                             "<td class='F3'>" +
                                 "{RESPONSE}" +
                                 "<a href='#'><span class='Y3'>{SENDER_NAME}({SENDER_ENO})</span></a><br>{SAY_HTML}" +
                             "</td>" +
                         "</tr></table></div>";
-
             var className;
             if (isResponse) {
                 className = "SE4";
-                inner = format(inner, { "RESPONSE": "<a href='#' class='F1'>＞{ANKER_INFO} <br></a>" });
+                inner = format(inner, { "RESPONSE": "<a class='F1' href='#'>＞{ANKER_INFO} <br></a>" });
             } else {
                 className = "SE3";
                 inner = format(inner, { "RESPONSE": "" });
             }
+
+            var widthPx = "900px";
+            if ($("#PLSBN3").text().includes == "２列") {
+                widthPx = "440px";
+            }
+            inner = format(inner, { "WIDTH_PX": widthPx });
 
             inner = format(inner, {
                 "CNT_CLASS_NAME": className,
@@ -347,6 +427,8 @@
             UpdateSayPreview(sayArgs);
         }
 
+        var _sayForm_Selector = "form[name='say']";
+        var _saySearch_Selector = "form[name='sch']";
         var _sayText_Selector = "textarea[name^='dt_mes']";
         var _sayName_Selector = "input[name^='dt_ai']";
         var _sayIcon_Selector = "select[name^='dt_ic']";
@@ -360,6 +442,9 @@
                 .on("keyup input", _sayText_Selector, callback)
                 .on("keyup input",_sayName_Selector, callback)
                 .on("change", _sayIcon_Selector, callback);
+
+            $(_sayForm_Selector).closest("td").css({ "overflow": "visible", "max-width": "700px" });
+            $(_saySearch_Selector).closest("td").css("vertical-align", "top");
         }
 
         return RegisterFormEvent;
@@ -392,13 +477,15 @@
         };
     })();
 
-    var EnableCloseTagAutocompletion = (function(){
+    var EnableTagAutocompletion = (function(){
 
-        var _ornamentTagNamePattern = "((?:F(?=\\d)|B|I|S|U)[1-7]?)";
-        var _maxOrnamentTagChars = 4; //_ornamentTagNamePatternにマッチする最大文字数+2
+        var _reTagStart  = new RegExp("<(" + OrnamentTagNamePattern + ")>", "gi");
+        var _reTagEnd    = new RegExp("</(" + OrnamentTagNamePattern + ")>", "gi");
+        var _rePossibleTagStartFoot  = new RegExp("<?(" + OrnamentTagNamePattern + ")>?$", "i");
+        var _reTagEndFoot    = new RegExp("</(" + OrnamentTagNamePattern + ")>$", "i");
+        var _reTagHead = new RegExp("<[^>]{0," + MaxOrnamentTagNameChars + "}?$");
+        var _reTagFoot = new RegExp("^[^<]{0," + MaxOrnamentTagNameChars + "}?>");
 
-        var _reTagStart  = new RegExp("<" + _ornamentTagNamePattern + ">", "gi");
-        var _reTagEnd    = new RegExp("</" + _ornamentTagNamePattern + ">", "gi");
         function FindUnclosedTags(valBefore, valAfter){
             var tagStarts = valBefore.match(_reTagStart);
             if (!tagStarts) {
@@ -430,8 +517,6 @@
             return tagStartNames;
         }
 
-        var _reTagHead = new RegExp("<[^>]{0," + _maxOrnamentTagChars + "}?$");
-        var _reTagFoot = new RegExp("^[^<]{0," + _maxOrnamentTagChars + "}?>");
         function InsertOrnamentTags(elem) {
             if (elem.selectionStart !== elem.selectionEnd) {
                 //文字列選択中
@@ -442,12 +527,12 @@
             var valBefore = elem.value.slice(0, sStart);
             var valAfter = elem.value.slice(sStart);
 
-            var tagMatch = new RegExp("<?" + _ornamentTagNamePattern + ">?$", "i").exec(valBefore);
+            var tagMatch = _rePossibleTagStartFoot.exec(valBefore);
             if (!tagMatch) {
                 return false;
             }
 
-            var MatchedAsCloseTag = new RegExp("<?/" + _ornamentTagNamePattern + ">?$", "i").test(valBefore);
+            var MatchedAsCloseTag = _reTagEndFoot.test(valBefore);
             if (MatchedAsCloseTag) {
                 return false;
             }
@@ -569,6 +654,8 @@
 
     AutoBRTagsToLineBreaks(document.body, "textarea[name^='dt_mes']");
     EnableEasyFormSubmittion(document.body, "textarea[name^='dt_mes']", "発言する");
-    EnableCloseTagAutocompletion(document.body, "textarea[name^='dt_mes']");
+    EnableTagAutocompletion(document.body, "textarea[name^='dt_mes']");
     EnableSayPreview(200);
+    var help = new TalkUtilHelp();
+    help.Enable(document.body, ".PreviewHeader");
 })(jQuery);
