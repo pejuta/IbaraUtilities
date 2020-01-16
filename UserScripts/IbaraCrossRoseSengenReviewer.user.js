@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IbaraCrossRoseSengenReviewer
 // @namespace    https://twitter.com/11powder
-// @version      0.1.1
+// @version      0.1.2
 // @description  CrossRoseのHomeでの宣言確認を可能にします。
 // @author       pejuta
 // @include      http://lisge.com/ib/act_index.php*
@@ -16,6 +16,9 @@
 
     $("div.SMIGI > table:last tr td:nth-of-type(3)").each((i, e) => {
         $(e).data("idx", i);
+        if(e.innerHTML !== "宣言済み") {
+            return;
+        }
         e.innerHTML = "宣言済み（▼最新の送信内容をざっくり確認）";
         $(e).addClass("ABO");
     });
