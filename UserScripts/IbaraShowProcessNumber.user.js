@@ -6,7 +6,7 @@
 // @include     http://lisge.com/ib/act_trade.php*
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraShowProcessNumber.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraShowProcessNumber.user.js
-// @version     1.0.1
+// @version     1.0.2
 // @grant       none
 // ==/UserScript==
 
@@ -17,9 +17,9 @@
     {
         case "/ib/act_main.php":
             const $tdp3 = $("td.P3");
-            $tdp3.filter((i, e) => e.textContent == "［破棄］").before("<span class='Y2'>1200:</span>");
-            $tdp3.filter((i, e) => e.textContent == "［食事］").before("<span class='Y2'>1400:</span>");
-            $("b.G3").filter((i, e) => e.textContent == "アイテム購入").before("<span class='Y2'>2200:</span>");
+            $tdp3.filter((i, e) => e.textContent == "［破棄］").prepend("<span class='Y2'>1200:</span>");
+            $tdp3.filter((i, e) => e.textContent == "［食事］").prepend("<span class='Y2'>1400:</span>");
+            $("b.G3").filter((i, e) => e.textContent == "アイテム購入").prepend("<span class='Y2'>2200:</span>");
             return;
         case "/ib/act_trade.php":
             const $bg3 = $("b.G3");
