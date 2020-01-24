@@ -226,7 +226,7 @@
 
             var replacedHtml = lineBreakToBR(escapedHtml).replace(/&lt;br&gt;/gi, "<BR>");
             for (var i = 0; i < 2; i++) {
-                replacedHtml = replacedHtml.replace(/&lt;(([1-9][0-9]?)D([1-9][0-9]?[0-9]?))&gt;/i, "<span class='DX'>【 <b>$1</b>：[$2個の$3面サイコロを振る] 】</span>");
+                replacedHtml = replacedHtml.replace(/&lt;(([1-9][0-9]?)D([1-9][0-9]?[0-9]?))&gt;/i, "<span class='DX'>【 <b>$1</b>：[$2個の$3面ダイスを振る] 】</span>");
             }
             return replaceLoop(replacedHtml, reOrnamentTags, replacer);
         };
