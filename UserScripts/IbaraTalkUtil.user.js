@@ -3,7 +3,7 @@
 // @namespace   https://twitter.com/11powder
 // @description 交流ってスバラシティ
 // @include     http://lisge.com/ib/talk.php*
-// @version     1.0.8.1
+// @version     1.0.8.2
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js
 // @grant       none
@@ -226,7 +226,7 @@
 
             var replacedHtml = lineBreakToBR(escapedHtml).replace(/&lt;br&gt;/gi, "<BR>");
             for (var i = 0; i < 2; i++) {
-                replacedHtml = replacedHtml.replace(/&lt;([1-9][0-9]?D[1-9][0-9]?[0-9]?)&gt;/i, "<span class='DX'>【 <b>$1</b>：[賽の目] 】</span>");
+                replacedHtml = replacedHtml.replace(/&lt;(([1-9][0-9]?)D([1-9][0-9]?[0-9]?))&gt;/i, "<span class='DX'>【 <b>$1</b>：[$2個の$3面サイコロを振る] 】</span>");
             }
             return replaceLoop(replacedHtml, reOrnamentTags, replacer);
         };
