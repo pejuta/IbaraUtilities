@@ -1,7 +1,7 @@
 # IbaraUtilities
 [pejuta(ENo.411, @11powder)](https://twitter.com/11powder)の制作したイバラシティ向けの便利なユーザースクリプト等のツールを置いてます。
-  
-  
+
+
 ## UserScripts
 ### [IbaraAddNameToSengens.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAddNameToSengens.user.js)
 - 宣言をざっくり確認する項目の一番上に自分のキャラクターの名称/ENo.を追加し誰の宣言であるかを明確にします。
@@ -16,7 +16,7 @@
 - Cross RoseのHome画面で全ての「ざっくり宣言確認」を確認できるようにします。
 
 ### [IbaraFavChars.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraFavChars.user.js)
-- キャラクター一覧、キャラクター結果、およびTalkページでキャラクターをお気に入り登録できるようになります。  
+- キャラクター一覧、キャラクター結果、およびTalkページでキャラクターをお気に入り登録できるようになります。
 - キャラクター一覧ページでお気に入り登録したキャラクターの一覧を確認することが出来ます。
 
 ### [IbaraMapOverlayer.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraMapOverlayer.user.js)
@@ -31,8 +31,9 @@
 ### [IbaraShowProcessNumber.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraShowProcessNumber.user.js)
 - 基本行動・取引行動宣言ページの該当項目に処理順を表示します。
 
-### [IbaraTalkUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.min.user.js)
-- リアルタイム交流ページで発言内容のプレビューを動的に表示したり、タグの入力を簡単に行えるようにします。 
+### [IbaraTalkUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js)
+- リアルタイム交流ページで発言内容のプレビューを動的に表示したり、タグの入力を簡単に行えるようにします。
+- 発言を「ふぁぼる」ことができるようになります。
 
 ## Pages
 ### [fullmap.html](https://pejuta.github.io/IbaraUtilities/Pages/fullmap.html)
