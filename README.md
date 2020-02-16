@@ -35,6 +35,10 @@
 - リアルタイム交流ページで発言内容のプレビューを動的に表示したり、タグの入力を簡単に行えるようにします。
 - 発言を「ふぁぼる」ことができるようになります。
 
+### [IbaraSerifUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSerifUtil.user.js)
+- IbaraTalkUtilのセリフ版です。およそのページでのセリフ/メッセージ入力に対応しています。
+- セリフ入力欄で改行入力を可能にします。
+
 ## Pages
 ### [fullmap.html](https://pejuta.github.io/IbaraUtilities/Pages/fullmap.html)
 - ハザマの全体地図（グリッド付き）です。簡単なお絵かき機能があるのでちょっとした移動計画に使えます。
