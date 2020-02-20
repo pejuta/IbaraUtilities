@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IbaraCrossRoseSengenReviewer
 // @namespace    https://twitter.com/11powder
-// @version      0.1.3.1
+// @version      0.1.3.2
 // @description  CrossRoseのHomeでの宣言確認を可能にします。
 // @author       pejuta
 // @include      http://lisge.com/ib/act_index.php*
@@ -12,49 +12,70 @@
 (($) => {
     "use strict";
 
-    function bindBattle(charactersInfo) {
-        $("[TP='SNBTN']").click(function(){
+    function bindLoadPMButtons(parentElem, targetUrl) {
+        $(parentElem).find("[id^=CHKHTML]").addClass("ABO").html("クリックで読み込み").one("click", (e) => {
+            e.currentTarget.classList.remove("ABO");
+            // if (e.currentTarget.dataset.loaded) {
+            //     return;
+            // }
+            const info = extractCharacterInfoInfoFromButtonId(e.currentTarget.id);
+            return loadPM(parentElem, targetUrl, info);
+            // e.currentTarget.dataset.loaded = true;
+        });
+    }
+
+    function loadPM(parentElem, targetUrl, info) {
+        return $.post(targetUrl, info,
+          function(data){
+            const id = "#CHKHTML" + info.ceno + (typeof info.ano === "number" ? ("A" + info.ano) : "");
+            $(parentElem).find(id).html(data);
+          }
+        );
+    }
+
+    function extractCharacterInfoInfoFromButtonId(id) {
+        const infoMatch =  /(\d+)A?(\d*?)$/i.exec(id);
+        if (!infoMatch) {
+            return;
+        }
+        const ceno = parseInt(infoMatch[1], 10);
+        const ano = infoMatch[2] ? parseInt(infoMatch[2], 10) : void 0;
+
+        return {
+            ceno,
+            ano
+        };
+    }
+
+    function bindBattleFuncs(parentElem) {
+        $(parentElem).find("[TP='SNBTN']").click(function(){
           var id = $(this).attr('ID');
           var bn = $(this).attr('BTNNO');
           id = id.replace("BTN","HTML");
-          if( $("#"+id).css('display')=='block' ){
-            $("#"+id).hide();
+          if( $(parentElem).find("#"+id).css('display')=='block' ){
+            $(parentElem).find("#"+id).hide();
             $(this).addClass("BUTT"+bn).removeClass("BUTT0");
           }else{
-            $("#"+id).show();
+            $(parentElem).find("#"+id).show();
             $(this).addClass("BUTT0").removeClass("BUTT1").removeClass("BUTT2");
           }
         });
 
-        $("[TP='BTBTN']").click(function(){
+        $(parentElem).find("[TP='BTBTN']").click(function(){
           var bn = $(this).attr('NO');
           if( $(this).hasClass('BUTT0') ){
             $(this).addClass("BUTT3").removeClass("BUTT0");
-            $(".BTYPE"+bn).hide();
+            $(parentElem).find(".BTYPE"+bn).hide();
           }else{
             $(this).addClass("BUTT0").removeClass("BUTT3");
-            $(".BTYPE"+bn).show();
+            $(parentElem).find(".BTYPE"+bn).show();
           }
         });
-
-        $("#SNCHK").one("click", function(){
-            charactersInfo.forEach((item) => {
-                CHKPM(item.eno, item.ano);
-            });
-        });
-
-      function CHKPM(no,ano){
-        $.post("act_battle.php",{ceno:no, a:ano},
-          function(data){
-            $("#CHKHTML"+no+"A"+ano).html(data);
-          }
-        );
-      }
     }
 
 
     const DATANAME_SENGEN_INDEX = "idx";
-    const DATANAME_HAS_SENGEN = "has_sengen";
+    const DATANAME_IS_SENGEN_ROW = "has_sengen";
 
     const _vdoc = document.implementation.createHTMLDocument();
 
@@ -75,16 +96,16 @@
         let isAide = false;
         switch (sengenIndex) {
             case 0:
-                url = "http://lisge.com/ib/act_main.php";
+                url = "act_main.php";
                 break;
             case 1:
-                url = "http://lisge.com/ib/act_trade.php";
+                url = "act_trade.php";
                 break;
             case 2:
-                url = "http://lisge.com/ib/act_battle.php";
+                url = "act_battle.php";
                 break;
             case sengenCount - 1:
-                url = "http://lisge.com/ib/act_skill.php";
+                url = "act_skill.php";
                 break;
             default:
                 throw new Error("invalid operation");
@@ -115,12 +136,10 @@
         $sengenContainer.find("td").append($sengenText);
 
         if (sengenIndex === 2) {
-            // battle
-            const charactersInfo = $("[TP='SNBTN']").get().map((e) => /^CHKBTN(\d+)A(\d+)$/i.exec(e.id)).filter(x => x).map((x) => {
-                return { eno: x[1], ano: x[2] };
-            });
-            bindBattle(charactersInfo);
+            bindBattleFuncs($sengenContainer);
         }
+
+        bindLoadPMButtons($sengenContainer, url);
 
         return $sengenContainer;
     }
@@ -128,18 +147,19 @@
     $table.find("tr td:nth-of-type(2)").each((i, e) => {
         const tdSengen = e.nextElementSibling;
         tdSengen.parentElement.dataset[DATANAME_SENGEN_INDEX] = i;
-        if (e.innerHTML.indexOf("未宣言") !== -1) {
-            return;
-        } else if (i > 2 && i < sengenCount - 1) {
+        if (i > 2 && i < sengenCount - 1) {
             return;
         }
-        tdSengen.parentElement.dataset[DATANAME_HAS_SENGEN] = true;
+        if (e.innerHTML.indexOf("未宣言") != -1) {
+            tdSengen.classList.add("R3");
+        }
+        tdSengen.parentElement.dataset[DATANAME_IS_SENGEN_ROW] = true;
         tdSengen.innerHTML += "（▼最新の送信内容をざっくり確認）";
         tdSengen.classList.add("ABO");
     });
 
     $("div.SMIGI > table:last tr").on("click", async (e) => {
-        if (!e.currentTarget.dataset[DATANAME_HAS_SENGEN]) {
+        if (!e.currentTarget.dataset[DATANAME_IS_SENGEN_ROW]) {
             return;
         }
 
