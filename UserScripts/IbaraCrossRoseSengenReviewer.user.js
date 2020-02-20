@@ -12,25 +12,22 @@
 (($) => {
     "use strict";
 
+    function loadPMButtonHandler(targetElem, parentElem, targetUrl) {
+        targetElem.classList.remove("ABO");
+        const info = extractCharacterInfoInfoFromButtonId(targetElem.id);
+        return loadPM(parentElem, targetUrl, info);
+    }
+
     function bindLoadPMButtons(parentElem, targetUrl) {
         $(parentElem).find("[id^=CHKHTML]").filter((i, e) => !e.innerHTML).addClass("ABO").html("クリックで読み込み").one("click", (e) => {
-            e.currentTarget.classList.remove("ABO");
-            // if (e.currentTarget.dataset.loaded) {
-            //     return;
-            // }
-            const info = extractCharacterInfoInfoFromButtonId(e.currentTarget.id);
-            return loadPM(parentElem, targetUrl, info);
-            // e.currentTarget.dataset.loaded = true;
+            loadPMButtonHandler(e.currentTarget, parentElem, targetUrl);
         });
     }
 
-    function loadPM(parentElem, targetUrl, info) {
-        return $.post(targetUrl, info,
-          function(data){
-            const id = "#CHKHTML" + info.ceno + (typeof info.ano === "number" ? ("A" + info.ano) : "");
-            $(parentElem).find(id).html(data);
-          }
-        );
+    async function loadPM(parentElem, targetUrl, info) {
+        const data = await $.post(targetUrl, info);
+        const id = "#CHKHTML" + infoToString(info);
+        return $(parentElem).find(id).html(data);
     }
 
     function extractCharacterInfoInfoFromButtonId(id) {
@@ -47,29 +44,38 @@
         };
     }
 
-    function bindBattleFuncs(parentElem) {
+    function infoToString(info) {
+        return info.ceno + (typeof info.ano === "number" ? ("A" + info.ano) : "");
+    }
+
+    function bindBattle(parentElem, url) {
         $(parentElem).find("[TP='SNBTN']").click(function(){
-          var id = $(this).attr('ID');
-          var bn = $(this).attr('BTNNO');
-          id = id.replace("BTN","HTML");
-          if( $(parentElem).find("#"+id).css('display')=='block' ){
-            $(parentElem).find("#"+id).hide();
-            $(this).addClass("BUTT"+bn).removeClass("BUTT0");
-          }else{
-            $(parentElem).find("#"+id).show();
-            $(this).addClass("BUTT0").removeClass("BUTT1").removeClass("BUTT2");
-          }
+            const containerId = $(this).attr('ID').replace("BTN","HTML");
+            const btnClass = "BUTT" + $(this).attr('BTNNO');
+            $(parentElem).find("#" + containerId).toggle();
+            $(this).toggleClass("BUTT0").toggleClass(btnClass);
         });
 
+        const battleShown = [];
+        battleShown[1] = true; // 遭遇戦は最初から見えてる
+
         $(parentElem).find("[TP='BTBTN']").click(function(){
-          var bn = $(this).attr('NO');
-          if( $(this).hasClass('BUTT0') ){
-            $(this).addClass("BUTT3").removeClass("BUTT0");
-            $(parentElem).find(".BTYPE"+bn).hide();
-          }else{
-            $(this).addClass("BUTT0").removeClass("BUTT3");
-            $(parentElem).find(".BTYPE"+bn).show();
-          }
+            const battleNumber = $(this).attr('NO');
+            battleShown[battleNumber] = !battleShown[battleNumber];
+            $(this).toggleClass("BUTT0").toggleClass("BUTT3");
+            $(parentElem).find(".BTYPE" + battleNumber).toggle();
+        });
+
+        $(parentElem).find("[id^=CHKHTML]").filter((i, e) => !e.innerHTML).addClass("ABO").html("クリックで読み込み").one("click", async (e) => {
+            const $container = await loadPMButtonHandler(e.currentTarget, parentElem, url);
+            battleShown.forEach((e, bi) => {
+                const $targetBattle = $container.find(".BTYPE" + bi);
+                if (battleShown[bi]) {
+                    $targetBattle.show();
+                } else {
+                    $targetBattle.hide();
+                }
+            });
         });
     }
 
@@ -93,7 +99,7 @@
         }
 
         let url;
-        let isAide = false;
+        // let isAide = false;
         switch (sengenIndex) {
             case 0:
                 url = "act_main.php";
@@ -113,22 +119,22 @@
                 // break;
         }
 
-        if (isAide) {
-            return;
-            // let aideIndex = sengenIndex - 2;
-            // let battleHtml = sengenHtmls[2];
-            // if (!battleHtml) {
-            //     await appendSengenText(2);
-            //     battleHtml = sengenHtmls[2];
-            // }
+        // if (isAide) {
+        //     return;
+        //     let aideIndex = sengenIndex - 2;
+        //     let battleHtml = sengenHtmls[2];
+        //     if (!battleHtml) {
+        //         await appendSengenText(2);
+        //         battleHtml = sengenHtmls[2];
+        //     }
 
-            // const $aideAnchor = $(battleHtml, _vdoc).find("a[href^='act_se.php'] > span.Y3").nextUntil(":not(a)").eq(aideIndex);
-            // const aideIdMatch = /(?:\?|&)a=(\d+)/.exec($aideAnchor.attr("href"));
-            // if (!aideIdMatch) {
-            //     throw new Error("invalid operation: the aide id of " + $tds.get(0).textContent + " has not found.");
-            // }
-            // url = "http://lisge.com/ib/act_battle.php?a=" + aideIdMatch[1];
-        }
+        //     const $aideAnchor = $(battleHtml, _vdoc).find("a[href^='act_se.php'] > span.Y3").nextUntil(":not(a)").eq(aideIndex);
+        //     const aideIdMatch = /(?:\?|&)a=(\d+)/.exec($aideAnchor.attr("href"));
+        //     if (!aideIdMatch) {
+        //         throw new Error("invalid operation: the aide id of " + $tds.get(0).textContent + " has not found.");
+        //     }
+        //     url = "http://lisge.com/ib/act_battle.php?a=" + aideIdMatch[1];
+        // }
 
         const sengenHtml = sengenHtmls[sengenIndex] = await (await fetch(url)).text();
         const $sengenText = $(sengenHtml, _vdoc).find("#SENGENTEXT").show();
@@ -136,10 +142,11 @@
         $sengenContainer.find("td").append($sengenText);
 
         if (sengenIndex === 2) {
-            bindBattleFuncs($sengenContainer);
+            bindBattle($sengenContainer, url);
+        } else {
+            bindLoadPMButtons($sengenContainer, url);
         }
 
-        bindLoadPMButtons($sengenContainer, url);
 
         return $sengenContainer;
     }
