@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IbaraCrossRoseSengenReviewer
 // @namespace    https://twitter.com/11powder
-// @version      0.1.3.2
+// @version      0.1.3.3
 // @description  CrossRoseのHomeでの宣言確認を可能にします。
 // @author       pejuta
 // @include      http://lisge.com/ib/act_index.php*
@@ -13,7 +13,7 @@
     "use strict";
 
     function bindLoadPMButtons(parentElem, targetUrl) {
-        $(parentElem).find("[id^=CHKHTML]").addClass("ABO").html("クリックで読み込み").one("click", (e) => {
+        $(parentElem).find("[id^=CHKHTML]").filter((i, e) => !e.innerHTML).addClass("ABO").html("クリックで読み込み").one("click", (e) => {
             e.currentTarget.classList.remove("ABO");
             // if (e.currentTarget.dataset.loaded) {
             //     return;
