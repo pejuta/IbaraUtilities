@@ -25,6 +25,9 @@
 ### [IbaraMarkYourCurrentLocation.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraMarkYourCurrentLocation.user.js)
 - ハザマ地図上にあなたのキャラクターの現在位置を表示します。
 
+### [IbaraResultCollapser.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraResultCollapser.user.js)
+- キャラクター結果の各項目を折りたたんで表示します。
+
 ### [IbaraSeisanPasta.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSeisanPasta.user.js)
 - 生産仕様や生産宣言の共有・入力を手助けするツールです。
 
