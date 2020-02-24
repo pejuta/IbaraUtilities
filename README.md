@@ -14,18 +14,18 @@
 - Firefox
 [Tampermonkey](https://addons.mozilla.org/ja/firefox/addon/tampermonkey/)
 [Violentmonkey](https://addons.mozilla.org/ja/firefox/addon/violentmonkey/)
-[Greasemonkey](https://addons.mozilla.org/ja/firefox/addon/greasemonkey/)
+(Greasemonkeyには対応していません。)
 3. 以下の一覧からインストールしたいスクリプトを選び、見出しをクリックすると「スクリプトをインストールする画面」が表示されますので、インストールボタンをクリックします。
 （この画面でインストール前にスクリプトの中身を確認することができます。）
 
 ### おすすめのユーザースクリプトは？
 全部…と言いたいところですが、とりわけおすすめなのは次の5つです。
-スクリプトごとの詳細はこのページの下にある一覧にありますので、そちらを参照してください。
-[IbaraTalkUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js)
-[IbaraSerifUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSerifUtil.user.js)
-[IbaraCrossRoseSengenReviewer.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraCrossRoseSengenReviewer.user.js)
-[IbaraBasicActionMiniMap.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBasicActionMiniMap.user.js)
-[IbaraSeisanPasta.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSeisanPasta.user.js)
+スクリプトごとの詳細はこのページの下にある一覧にありますので、そちらを参照してください。  
+[IbaraTalkUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js)  
+[IbaraSerifUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSerifUtil.user.js)  
+[IbaraCrossRoseSengenReviewer.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraCrossRoseSengenReviewer.user.js)  
+[IbaraBasicActionMiniMap.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBasicActionMiniMap.user.js)  
+[IbaraSeisanPasta.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSeisanPasta.user.js)  
   
 ## UserScript一覧
   
