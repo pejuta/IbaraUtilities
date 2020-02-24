@@ -21,11 +21,11 @@
 ### おすすめのユーザースクリプトは？
 全部…と言いたいところですが、とりわけおすすめなのは次の5つです。
 スクリプトごとの詳細はこのページの下にある一覧にありますので、そちらを参照してください。
-[IbaraTalkUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js)
-[IbaraSerifUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSerifUtil.user.js)
-[IbaraCrossRoseSengenReviewer.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraCrossRoseSengenReviewer.user.js)
-[IbaraBasicActionMiniMap.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBasicActionMiniMap.user.js)
-[IbaraSeisanPasta.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSeisanPasta.user.js)
+[IbaraTalkUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js)  
+[IbaraSerifUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSerifUtil.user.js)  
+[IbaraCrossRoseSengenReviewer.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraCrossRoseSengenReviewer.user.js)  
+[IbaraBasicActionMiniMap.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBasicActionMiniMap.user.js)  
+[IbaraSeisanPasta.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSeisanPasta.user.js)  
   
 ## UserScript一覧
   
