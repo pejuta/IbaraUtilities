@@ -2,7 +2,10 @@
 [pejuta(ENo.411, @11powder)](https://twitter.com/11powder)の制作したイバラシティ向けの便利なユーザースクリプト等のツールを置いてます。
 
 ## UserScripts
-#### UserScriptってどうやって使うの？
+#### UserScriptって何？
+ユーザーが作成したスクリプト（プログラム）をブラウザで実行する為の仕組みのことです。そのスクリプト自体もユーザースクリプトと呼ばれます。
+ブラウザごとに利用可能な**「アドオン」**の親戚のようなものですね。
+#### で、UserScriptってどうやって使うの？
 1. Google Chrome / Firefoxなどのモダンブラウザをインストールします。（なければ）
 2. 次のアドオンを使用したいブラウザごとに**一つだけ**インストールします。
 - Google Chrome
@@ -24,7 +27,7 @@
 [IbaraBasicActionMiniMap.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBasicActionMiniMap.user.js)
 [IbaraSeisanPasta.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSeisanPasta.user.js)
   
-  
+## UserScript一覧
   
 ### [IbaraAddNameToSengens.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAddNameToSengens.user.js)
 - 宣言をざっくり確認する項目の一番上に自分のキャラクターの名称/ENo.を追加し誰の宣言であるかを明確にします。
