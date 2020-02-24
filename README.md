@@ -14,7 +14,7 @@
 - Firefox
 [Tampermonkey](https://addons.mozilla.org/ja/firefox/addon/tampermonkey/)
 [Violentmonkey](https://addons.mozilla.org/ja/firefox/addon/violentmonkey/)
-[Greasemonkey](https://addons.mozilla.org/ja/firefox/addon/greasemonkey/)
+(Greasemonkeyには対応していません。)
 3. 以下の一覧からインストールしたいスクリプトを選び、見出しをクリックすると「スクリプトをインストールする画面」が表示されますので、インストールボタンをクリックします。
 （この画面でインストール前にスクリプトの中身を確認することができます。）
 
