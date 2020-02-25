@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IbaraFavChars
 // @namespace    https://twitter.com/11powder
-// @version      0.1.1.1
+// @version      0.1.2
 // @description  お気に入りのキャラクターに愛を添えて。
 // @include      http://lisge.com/ib/chalist.php*
 // @include      http://lisge.com/ib/talk.php*
@@ -18,10 +18,7 @@
         $("head").append(`<style type='text/css'>${style}</style>`);
     }
 
-    const FLASHDOT_CSS_URL = "https://pejuta.github.io/IbaraUtilities/UserScripts/src/df.css";
-    function loadFlashdotCSS() {
-        return $.ajax({ type: "GET", dataType: "text", url: FLASHDOT_CSS_URL }).done((css) => $addStyle(css));
-    }
+    const FLASHDOT_CSS = ".df-stage{display:flex;align-items:center;justify-content:center}.dot-flashing{position:relative;width:4px;height:4px;border-radius:2px;background-color:#444;color:#444;animation:a 1s infinite linear alternate;animation-delay:.5s}.dot-flashing:after,.dot-flashing:before{content:'';display:inline-block;position:absolute;top:0}.dot-flashing:before{left:-6px;animation-delay:0}.dot-flashing:after,.dot-flashing:before{width:4px;height:4px;border-radius:2px;background-color:#444;color:#444;animation:a 1s infinite alternate}.dot-flashing:after{left:6px;animation-delay:1s}@keyframes a{0{background-color:#444}50%,to{background-color:#fff}}";
 
     function delay(ms) {
         return new Promise((resolve) => {
@@ -436,7 +433,7 @@
             }
 
             if (countOfFavCharInfoBtnClicked == 0) {
-                loadFlashdotCSS();
+                $addStyle(FLASHDOT_CSS);
                 $updateFavCharInfo.html("情報取得中（反映までしばらくお待ち下さい）" + _flashdotHTML).css("width", "500px");
 
                 await db.loadOrDownload(_favENoList.getArray());
@@ -447,7 +444,7 @@
                     return;
                 }
 
-                loadFlashdotCSS();
+                $addStyle(FLASHDOT_CSS);
                 $updateFavCharInfo.html("情報更新中（反映までしばらくお待ち下さい）" + _flashdotHTML).css("width", "500px");
 
                 await db.download(_favENoList.getArray());
