@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IbaraFavChars
 // @namespace    https://twitter.com/11powder
-// @version      0.1.2
+// @version      0.1.2.1
 // @description  お気に入りのキャラクターに愛を添えて。
 // @include      http://lisge.com/ib/chalist.php*
 // @include      http://lisge.com/ib/talk.php*
@@ -464,7 +464,7 @@
     }
 
     function CharaPage() {
-        $addStyle(FAV_CSS + ".Favorite:before{background-color:black;border-radius:10px;}div.Favorite{position:absolute;top:100px;left:380px;font-size:50px;z-index:99;}");
+        $addStyle(FAV_CSS + "div.Favorite{position:absolute;top:100px;left:380px;font-size:50px;z-index:99;}");
 
         const eno = parseInt(/\d+$/.exec($("div.CEN").html()) || "0", 10);
 
@@ -473,7 +473,7 @@
     }
 
     function TalkPage() {
-        $addStyle(FAV_CSS + ".Favorite:before{background-color:black;border-radius:4px;}table.SE0 td[width='70']{position:relative;}div.Favorite{position:absolute;top:4px;right:7px;}");
+        $addStyle(FAV_CSS + "table.SE0 td[width='70']{position:relative;}div.Favorite{position:absolute;top:4px;right:7px;}");
 
         $("img.RE2").each((i, e) => {
             const enoTxt = e.getAttribute("no");
