@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IbaraCrossRoseSengenReviewer
 // @namespace    https://twitter.com/11powder
-// @version      0.1.3.3
+// @version      0.1.3.4
 // @description  CrossRoseのHomeでの宣言確認を可能にします。
 // @author       pejuta
 // @include      http://lisge.com/ib/act_index.php*
@@ -36,16 +36,16 @@
             return;
         }
         const ceno = parseInt(infoMatch[1], 10);
-        const ano = infoMatch[2] ? parseInt(infoMatch[2], 10) : void 0;
+        const a = infoMatch[2] ? parseInt(infoMatch[2], 10) : void 0;
 
         return {
             ceno,
-            ano
+            a
         };
     }
 
     function infoToString(info) {
-        return info.ceno + (typeof info.ano === "number" ? ("A" + info.ano) : "");
+        return info.ceno + (typeof info.a === "number" ? ("A" + info.a) : "");
     }
 
     function bindBattle(parentElem, url) {
