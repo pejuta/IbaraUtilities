@@ -3,7 +3,7 @@
 // @namespace   https://twitter.com/11powder
 // @description 同じ宣言登録ページを複数タブ・ウィンドウで開いた時に発生しがちな宣言衝突ミスを緩和します。
 // @include     http://lisge.com/ib/*.php*
-// @version     1.0.1
+// @version     1.0.2
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSengenConflictAware.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSengenConflictAware.user.js
 // @grant       none
@@ -35,6 +35,10 @@
     let lastSubmissionTime = null;
 
     window.addEventListener("storage", (ev) => {
+        if (ev.key !== storageKey) {
+            return;
+        }
+
         if (ev.newValue === null) {
             return;
         }
@@ -43,12 +47,10 @@
             return;
         }
 
-        if (ev.key === storageKey) {
-            lastSubmissionTime = ev.newValue;
-            setTimeout(() => {
-                window.alert(CONFLICT_MESSAGE + CONFLICT_MESSAGE_LAST_SUBMISSION_TIME + lastSubmissionTime);
-            }, 0);
-        }
+        lastSubmissionTime = ev.newValue;
+        setTimeout(() => {
+            window.alert(CONFLICT_MESSAGE + CONFLICT_MESSAGE_LAST_SUBMISSION_TIME + lastSubmissionTime);
+        }, 0);
     });
 
     act.addEventListener("submit", (ev) => {
