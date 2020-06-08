@@ -20,15 +20,15 @@
 
 ### おすすめのユーザースクリプトは？
 全部…と言いたいところですが、とりわけおすすめなのは次の5つです。
-スクリプトごとの詳細はこのページの下にある一覧にありますので、そちらを参照してください。  
-[IbaraTalkUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js)  
-[IbaraSerifUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSerifUtil.user.js)  
-[IbaraCrossRoseSengenReviewer.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraCrossRoseSengenReviewer.user.js)  
-[IbaraBasicActionMiniMap.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBasicActionMiniMap.user.js)  
-[IbaraSeisanPasta.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSeisanPasta.user.js)  
-  
+スクリプトごとの詳細はこのページの下にある一覧にありますので、そちらを参照してください。
+[IbaraTalkUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraTalkUtil.user.js)
+[IbaraSerifUtil.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSerifUtil.user.js)
+[IbaraCrossRoseSengenReviewer.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraCrossRoseSengenReviewer.user.js)
+[IbaraBasicActionMiniMap.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBasicActionMiniMap.user.js)
+[IbaraSeisanPasta.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSeisanPasta.user.js)
+
 ## UserScript一覧
-  
+
 ### [IbaraAddNameToSengens.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraAddNameToSengens.user.js)
 - 宣言をざっくり確認する項目の一番上に自分のキャラクターの名称/ENo.を追加し誰の宣言であるかを明確にします。
 
@@ -56,6 +56,9 @@
 
 ### [IbaraSeisanPasta.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSeisanPasta.user.js)
 - 生産仕様や生産宣言の共有・入力を手助けするツールです。
+
+### [IbaraSengenConflictAware.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSengenConflictAware.user.js)
+- 複数ウィンドウで同じ宣言ページを開いている際に発生しがちな宣言の衝突を**回避**できるようになります。
 
 ### [IbaraShowProcessNumber.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraShowProcessNumber.user.js)
 - 基本行動・取引行動宣言ページの該当項目に処理順を表示します。
