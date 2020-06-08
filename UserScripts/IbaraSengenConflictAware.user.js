@@ -3,7 +3,7 @@
 // @namespace   https://twitter.com/11powder
 // @description 同じ宣言登録ページを複数タブ・ウィンドウで開いた時に発生しがちな宣言衝突ミスを緩和します。
 // @include     http://lisge.com/ib/*.php*
-// @version     1.0.0
+// @version     1.0.1
 // @updateURL   https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSengenConflictAware.user.js
 // @downloadURL https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraSengenConflictAware.user.js
 // @grant       none
@@ -23,7 +23,7 @@
     const LOCALSTORAGE_PREFIX = "IB_SCAware_";
     const CONFLICT_MESSAGE = "他のタブまたはウィンドウで宣言の送信が行われました。";
     const CONFLICT_MESSAGE_ON_SUBMIT = "既に" + CONFLICT_MESSAGE + "\r\n宣言の送信を中止します。";
-    const CONFLICT_MESSAGE_LAST_SUBMISSION_TIME = "\r\n最終送信日時: ";
+    const CONFLICT_MESSAGE_LAST_SUBMISSION_TIME = "\r\n宣言送信日時: ";
 
     const storageKey = LOCALSTORAGE_PREFIX + location.pathname;
 
@@ -32,27 +32,36 @@
         return;
     }
 
-    let hasConflictHappened = false;
+    let lastSubmissionTime = null;
 
     window.addEventListener("storage", (ev) => {
-        if (hasConflictHappened) {
+        if (ev.newValue === null) {
+            return;
+        }
+
+        if (lastSubmissionTime !== null) {
             return;
         }
 
         if (ev.key === storageKey) {
-            hasConflictHappened = true;
-            window.alert(CONFLICT_MESSAGE + CONFLICT_MESSAGE_LAST_SUBMISSION_TIME + ev.newValue);
+            lastSubmissionTime = ev.newValue;
+            setTimeout(() => {
+                window.alert(CONFLICT_MESSAGE + CONFLICT_MESSAGE_LAST_SUBMISSION_TIME + lastSubmissionTime);
+            }, 0);
         }
     });
 
     act.addEventListener("submit", (ev) => {
-        if (hasConflictHappened) {
-            window.alert(CONFLICT_MESSAGE_ON_SUBMIT + CONFLICT_MESSAGE_LAST_SUBMISSION_TIME + localStorage.getItem(storageKey));
+        if (lastSubmissionTime !== null) {
+            setTimeout(() => {
+                window.alert(CONFLICT_MESSAGE_ON_SUBMIT + CONFLICT_MESSAGE_LAST_SUBMISSION_TIME + lastSubmissionTime);
+            }, 0);
             ev.preventDefault();
             return;
         }
 
         localStorage.setItem(storageKey, showBriefDatePretty(new Date()));
+        localStorage.removeItem(storageKey);
     });
 })();
 
