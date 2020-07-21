@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IbaraMarkYourCurrentLocation
 // @namespace    https://twitter.com/11powder
-// @version      0.1.2
+// @version      0.1.3
 // @description  マップ上にあなたの現在位置を表示します。
 // @include      /^http:\/\/lisge\.com\/ib\/k\/now\/map\d{1,2}\.html$/
 // @updateURL    https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraMarkYourCurrentLocation.user.js
@@ -54,7 +54,7 @@
         };
 
         fn.parse = function(locationText) {
-            const m = /(^.+)区([A-Z])-(\d{1,2})$/.exec(locationText);
+            const m = /(^[^ ]+)区? ?([A-Z])-(\d{1,2})$/.exec(locationText);
             if (m === null) {
                 throw new Error("位置情報テキストが正常に解析できませんでした。");
             }
