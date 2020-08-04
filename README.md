@@ -38,6 +38,9 @@
 ### [IbaraBasicActionMiniMap.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBasicActionMiniMap.user.js)
 - 基本行動：移動宣言にミニマップを追加し入力した通りの移動の軌跡を表示します。（壁ドン池ポチャ判定はないので注意です。）
 
+### [IbaraBSSkillTooltip.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBSSkillTooltip.user.js)
+- 戦闘宣言ページで選択したスキルの詳細をツールチップに自動表示します。
+
 ### [IbaraCrossRoseSengenReviewer.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraCrossRoseSengenReviewer.user.js)
 - Cross RoseのHome画面で全ての「ざっくり宣言確認」を確認できるようにします。
 
