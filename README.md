@@ -36,10 +36,12 @@
 - 各公式BBSの投稿者の名前に含まれている数字をENo.として、該当キャラクターへのリンクを生成します。
 
 ### [IbaraBasicActionMiniMap.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBasicActionMiniMap.user.js)
-- 基本行動：移動宣言にミニマップを追加し入力した通りの移動の軌跡を表示します。（壁ドン池ポチャ判定はないので注意です。）
+- 基本行動：移動宣言にミニマップを追加し入力した通りの移動の軌跡を表示します。
+- 壁ドン池ポチャや体調不足を検出して表示します。
 
 ### [IbaraBSSkillTooltip.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraBSSkillTooltip.user.js)
 - 戦闘宣言ページで選択したスキルの詳細をツールチップに自動表示します。
+- 村人さん[@lv0_murabito](@https://twitter.com/lv0_murabito)開発のスキル設定拡張ユーザースクリプト[IbaracitySearchableBattleForm.user.js](https://github.com/murabitoz)と併用するとより快適に利用できるようになります。
 
 ### [IbaraCrossRoseSengenReviewer.user.js](https://pejuta.github.io/IbaraUtilities/UserScripts/IbaraCrossRoseSengenReviewer.user.js)
 - Cross RoseのHome画面で全ての「ざっくり宣言確認」を確認できるようにします。
