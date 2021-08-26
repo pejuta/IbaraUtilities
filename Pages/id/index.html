@@ -1,0 +1,68 @@
+<html><head>
+    <title>アイテム表</title>
+    <link type="text/css" rel="stylesheet" href="./itemData.css"><script type="text/javascript" src="./itemData.js"></script><script type="text/javascript">
+
+    let resultContainers;
+    window.onload = () => {
+        resultContainers = Array.prototype.slice.call(document.body.getElementsByClassName("SearchResultContainer"));
+    };
+
+    function showNeededCountOfContainers(count) {
+        for (var i = 0; i < resultContainers.length; i++) {
+            if (i < count) {
+                resultContainers[i].style.display = "block";
+            } else {
+                resultContainers[i].style.display = "none";
+            }
+        }
+    }
+
+    function search(val) {
+        if (!(val && val in itemData)) {
+            showNeededCountOfContainers(0);
+            return;
+        }
+
+        const enos = [parseInt(val, 10)].concat(itemData[val].pm);
+        showNeededCountOfContainers(enos.length);
+        for (let i = 0; i < enos.length; i++) {
+            if (i >= resultContainers.length) {
+                resultContainers[i] = resultContainers[0].cloneNode(true);
+                document.body.append(resultContainers[i]);
+            }
+
+            const eno = enos[i];
+            const targetData = itemData[eno];
+            const maxINo = targetData.items[targetData.items.length - 1].no;
+            const inoMap = new Map(targetData.items.map(x => [x.no, x]));
+
+            const info = resultContainers[i].getElementsByClassName("SearchInfo")[0];
+            const result = resultContainers[i].getElementsByClassName("SearchResult")[0];
+            const resultbody = result.getElementsByTagName("tbody")[0];
+
+            info.innerHTML = "ENo." + targetData.eno + " " + targetData.name;
+
+            const itemHTMLs = [];
+            const columns = 7;
+            for (let ii = 1; ii <= maxINo; ii++) {
+                if (inoMap.has(ii)) {
+                    const item = inoMap.get(ii);
+                    const rangetext = (typeof item.range === "number" ? `(射程${item.range.toString()})` : "");
+                    itemHTMLs.push(`<tr ${item.unt ? " class='Untradable'": ""}><td>${[item.no.toString(), item.name, item.type + rangetext, item.str.toString(), item.desc, item.bitm, item.cstr].join("</td><td>")}</td></tr>`);
+                } else {
+                    itemHTMLs.push(`<tr><td colspan="${columns}">${ii}</td></tr>`);
+                }
+            }
+
+            resultbody.innerHTML = itemHTMLs.join("\n");
+        }
+    }
+</script>
+</head>
+<body>
+    ENo.<input type="text" oninput="search(this.value);" id="SearchBox">
+    <div class="SearchResultContainer">
+        <div class="SearchInfo">ENo. をいれてね</div>
+        <table class="SearchResult"><thead><th class="CNo">No.</th><th class="CName">名前</th><th class="CType">種類</th><th class="CStr">強さ</th><th class="CDesc">効果</th><th class="CBName">元アイテム名</th><th class="CCStr">合成強度</th></thead><tbody></tbody></table>
+    </div>
+</body></html>
